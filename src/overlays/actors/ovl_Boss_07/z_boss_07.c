@@ -55,6 +55,7 @@ void func_80A0264C(Boss07* this, PlayState* play);
 void func_80A04890(Boss07* this, PlayState* play);
 void func_80A04E5C(Boss07* this, PlayState* play);
 void func_80A05608(Boss07* this, PlayState* play);
+void func_80A05694(Boss07* this, PlayState* play);
 void func_80A05B50(Boss07* this, PlayState* play);
 void func_80A05DDC(Boss07* this, PlayState* play);
 
@@ -415,7 +416,9 @@ static ColliderCylinderInit D_80A07ED0 = {
     { 40, 20, 15, { 0, 0, 0 } },
 };
 
-Vec3f D_80A07F6C[5] = {
+static s16 D_80A07F54[4] = { 0xC8, 0xC9, 0xCA, 0xCB };
+
+static Vec3f D_80A07F6C[5] = {
     { 40.0f, 400.0f, 110.0f },
     { 80.0f, 450.0f, 110.0f },
     { 100.0f, 400.0f, 110.0f },
@@ -445,8 +448,19 @@ extern ColliderCylinderInit D_80A07ED0;
 extern Vec3f D_80A07F6C[5];
 extern Vec3f D_80A09A40;
 extern s8 D_80A09A4C;
+extern s32 D_80A09A50;
+extern Boss07 *D_80A09A54;
+extern Boss07 *D_80A09A58;
+extern Boss07 *D_80A09A5C;
 extern Boss07 *D_80A09A60[4];
 extern s8 D_80A09A70;
+extern s8 D_80A09A71;
+extern UNK_TYPE D_80A09A78;
+extern UNK_TYPE D_80A0A888;
+// static struct _struct_D_80A07F3C_0x6 D_80A07F3C[4]; // Vec3s?
+extern s16 D_80A07F54[4];
+extern UNK_TYPE D_80A07F5C;                                /* unable to generate initializer */
+extern UNK_TYPE D_80A07F64;
 
 extern UNK_TYPE D_06000194;
 extern UNK_TYPE D_06000428;
@@ -455,16 +469,19 @@ extern UNK_TYPE D_06002C40;
 extern UNK_TYPE D_06002D84;
 extern UNK_TYPE D_06003854;
 extern UNK_TYPE D_06003A64;
+extern FlexSkeletonHeader D_060099A0;
 extern UNK_TYPE D_06009C7C;
 extern UNK_TYPE D_06009EA8;
 extern UNK_TYPE D_0600A194;
 extern UNK_TYPE D_0600A400;
+extern AnimationHeader D_0600A6AC;
 extern UNK_TYPE D_0600AE40;
 extern UNK_TYPE D_0600AFB0;
 extern UNK_TYPE D_0600B020;
 extern UNK_TYPE D_0600C7D8;
 extern UNK_TYPE D_0600CEE8;
 extern UNK_TYPE D_060149A0;
+extern SkeletonHeader D_06019C58;
 extern UNK_TYPE D_06019E48;
 extern UNK_TYPE D_0601DEB4;
 extern UNK_TYPE D_06022BB4;
@@ -481,6 +498,7 @@ extern UNK_TYPE D_0602EFE8;
 extern UNK_TYPE D_0602F640;
 extern UNK_TYPE D_0602F840;
 extern void* D_06032040;
+extern FlexSkeletonHeader D_060335F0;
 extern AnimationHeader D_06033F80;
 extern AnimationHeader D_06034E64;
 extern AnimationHeader D_060358C4;
@@ -684,9 +702,9 @@ void func_809F7400(Boss07 *this, PlayState *play, s16 arg2) {
     this->actionFunc = func_809F748C;
     Animation_MorphToLoop(&this->skelAnime, &D_0603CBD0, -10.0f);
     if (arg2 != 0) {
-        this->unk150 = arg2;
+        this->unk150[0] = arg2;
     } else {
-        this->unk150 = (s16) Rand_ZeroFloat(30.0f);
+        this->unk150[0] = (s16) Rand_ZeroFloat(30.0f);
     }
     this->actor.flags |= 1;
 }
@@ -712,7 +730,7 @@ void func_809F7D2C(Boss07* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
     this->actionFunc = func_809F805C;
-    this->unk152 = 0;
+    this->unk150[1] = 0;
     if (player->stateFlags3 & 0x100) {
         this->unk14E = 4;
     } else {
@@ -910,7 +928,7 @@ void func_809F805C(Boss07 *this, PlayState *play) {
             }
             break;
     }
-    if ((Animation_OnFrame(&this->skelAnime, this->unk1D4) != 0) || (this->unk152 == 1)) {
+    if ((Animation_OnFrame(&this->skelAnime, this->unk1D4) != 0) || (this->unk150[1] == 1)) {
         func_809F7400(this, play, 0);
     }
 }
@@ -1095,7 +1113,32 @@ void func_809F805C(Boss07 *this, PlayState *play) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A05608.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A05694.s")
+// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A05694.s")
+void func_80A05694(Boss07* this, PlayState* play) {
+    u32 i;
+
+    this->unk14C++;
+    for(i = 0; i < ARRAY_COUNT(this->unk150); i++) {
+        if(this->unk150[i] != 0) {
+            this->unk150[i]--;
+        }
+    }
+    if (this->unk18D6 != 0) {
+        this->unk18D6--;
+    }
+    if (this->unk15C != 0) {
+        this->unk15C--;
+    }
+    if (this->unk15E != 0) {
+        this->unk15E--;
+    }
+    this->actionFunc(this, play);
+    this->actor.focus.pos = this->actor.world.pos;
+    this->actor.world.pos.x += this->unk18CC;
+    this->actor.world.pos.z += this->unk18D0;
+    Math_ApproachZeroF(&this->unk18CC, 1.0f, 1.0f);
+    Math_ApproachZeroF(&this->unk18D0, 1.0f, 1.0f);
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A057A0.s")
 

@@ -23,12 +23,11 @@ typedef struct Boss07 {
     /* 0x014C */ s16 unk14C;
     /* 0x014E */ u8 unk14E;
     /* 0x014F */ s8 pad14F;
-    /* 0x0150 */ s16 unk150;
-    /* 0x0152 */ s16 unk152;
-    /* 0x0154 */ s16 unk154;
+    /* 0x0150 */ s16 unk150[3];
     /* 0x0156 */ char pad156[6];                    /* maybe part of unk154[4]? */
     /* 0x015C */ s16 unk15C;
-    /* 0x015E */ char pad15E[6];                    /* maybe part of unk15C[4]? */
+    /* 0x015E */ s16 unk15E;                        /* inferred */
+    /* 0x0160 */ char pad160[4];                    /* maybe part of unk15E[3]? */
     /* 0x0164 */ Vec3f unk164;
     /* 0x0170 */ f32 unk170;
     /* 0x0174 */ s8 unk174;
@@ -68,8 +67,8 @@ typedef struct Boss07 {
     /* 0x17C4 */ f32 unk17C4;
     /* 0x17C8 */ char pad17C8[0x10];                /* maybe part of unk17C4[5]? */
     /* 0x17D8 */ s16 unk17D8;
-    /* 0x17DA */ s16 unk17DA;                       /* inferred */
-    /* 0x17DC */ s16 unk17DC;                       /* inferred */
+    /* 0x17DA */ s16 unk17DA;
+    /* 0x17DC */ s16 unk17DC;
     /* 0x17DE */ char pad17DE[2];
     /* 0x17E0 */ f32 unk17E0;
     /* 0x17E4 */ f32 unk17E4;
@@ -89,7 +88,12 @@ typedef struct Boss07 {
     /* 0x1820 */ ColliderCylinder unk1820;
     /* 0x186C */ char pad186C[0x1C];
     /* 0x1888 */ s8 unk1888;
-    /* 0x1889 */ char pad1889[0x53];                /* maybe part of unk1888[0x54]? */
+    /* 0x1889 */ char pad1889[0x43];                /* maybe part of unk1888[0x44]? */
+    /* 0x18CC */ f32 unk18CC;                       /* inferred */
+    /* 0x18D0 */ f32 unk18D0;                       /* inferred */
+    /* 0x18D4 */ char pad18D4[2];
+    /* 0x18D6 */ s16 unk18D6;                       /* inferred */
+    /* 0x18D8 */ char pad18D8[4];                   /* maybe part of unk18D6[3]? */
     /* 0x18DC */ s32 unk18DC;
     /* 0x18E0 */ char pad18E0[0x10];                /* maybe part of unk18DC[5]? */
     /* 0x18F0 */ ColliderQuad unk18F0;
@@ -103,8 +107,8 @@ typedef struct Boss07 {
     /* 0xABE0 */ Vec3f unkABE0;
     /* 0xABEC */ Vec3f unkABEC;
     /* 0xABF8 */ Vec3f unkABF8;
-    /* 0xAC04 */ char padAC04[8];                   /* maybe part of unkAC00[3]? */
-    /* 0xAC0C */ f32 unkAC0C;                       /* inferred */
+    /* 0xAC04 */ char padAC04[8];
+    /* 0xAC0C */ f32 unkAC0C;
     /* 0xAC10 */ char padAC10[0x10];                /* maybe part of unkAC0C[5]? */
 } Boss07;                                           /* size = 0xAC20 */
 

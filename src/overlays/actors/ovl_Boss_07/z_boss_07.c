@@ -483,7 +483,7 @@ extern UNK_TYPE D_0600AFB0;
 extern UNK_TYPE D_0600B020;
 extern UNK_TYPE D_0600C7D8;
 extern UNK_TYPE D_0600CEE8;
-extern UNK_TYPE D_060149A0;
+extern void* D_060149A0;
 extern void* D_06016090;
 extern void* D_06017DE0;
 extern void* D_06019328;

@@ -56,6 +56,7 @@ void func_80A04890(Boss07* this, PlayState* play);
 void func_80A04E5C(Boss07* this, PlayState* play);
 void func_80A05608(Boss07* this, PlayState* play);
 void func_80A05694(Boss07* this, PlayState* play);
+void func_80A057A0(Actor* thisx, PlayState *play);
 void func_80A05B50(Boss07* this, PlayState* play);
 void func_80A05DDC(Boss07* this, PlayState* play);
 
@@ -462,6 +463,8 @@ extern s16 D_80A07F54[4];
 extern UNK_TYPE D_80A07F5C;                                /* unable to generate initializer */
 extern UNK_TYPE D_80A07F64;
 
+extern void* D_04023348;
+extern void* D_04023428;
 extern UNK_TYPE D_06000194;
 extern UNK_TYPE D_06000428;
 extern UNK_TYPE D_06000D0C;
@@ -481,6 +484,9 @@ extern UNK_TYPE D_0600B020;
 extern UNK_TYPE D_0600C7D8;
 extern UNK_TYPE D_0600CEE8;
 extern UNK_TYPE D_060149A0;
+extern void* D_06016090;
+extern void* D_06017DE0;
+extern void* D_06019328;
 extern SkeletonHeader D_06019C58;
 extern UNK_TYPE D_06019E48;
 extern UNK_TYPE D_0601DEB4;
@@ -1114,6 +1120,7 @@ void func_809F805C(Boss07 *this, PlayState *play) {
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A05608.s")
 
 // #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A05694.s")
+/** Update function when params >= 0xC8 (remains?); seems to move the actor laterally while slowly reducing velocity and some other properties */
 void func_80A05694(Boss07* this, PlayState* play) {
     u32 i;
 
@@ -1140,7 +1147,54 @@ void func_80A05694(Boss07* this, PlayState* play) {
     Math_ApproachZeroF(&this->unk18D0, 1.0f, 1.0f);
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A057A0.s")
+// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A057A0.s")
+/** Remains draw function? */
+void func_80A057A0(Actor* thisx, PlayState* play) {
+    char pad[8];
+    f32 sp64;
+    f32 sp60;
+    Boss07* this = (Boss07*)thisx;
+    char pad2[2];
+    GraphicsContext* __gfxCtx;
+
+    __gfxCtx = play->state.gfxCtx;
+    func_8012C28C(play->state.gfxCtx);
+    if (this->unk15E & 1) {
+        __gfxCtx->polyOpa.p = Gfx_SetFog(__gfxCtx->polyOpa.p, 0xFF, 0, 0, 0xFF, 0x384, 0x44B);
+    }
+    sp64 = this->unk15C * DEG_TO_RAD(45) * 0.06666667f;
+    sp60 = Math_SinS(this->unk15C * 0x3500) * sp64 * 0.5f;
+    Matrix_RotateYF(Math_SinS(this->unk15C * 0x4500) * sp64, MTXMODE_APPLY);
+    Matrix_RotateXFApply(sp60);
+    gSPMatrix(POLY_OPA_DISP++, Matrix_NewMtx(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
+    switch (this->actor.params) {
+        case 0xC8:
+            gSPDisplayList(POLY_OPA_DISP++, &D_060149A0);
+            break;
+        case 0xC9:
+            gSPDisplayList(POLY_OPA_DISP++, &D_06016090);
+            break;
+        case 0xCA:
+            gSPDisplayList(POLY_OPA_DISP++, &D_06017DE0);
+            break;
+        case 0xCB:
+            gSPDisplayList(POLY_OPA_DISP++, &D_06019328);
+            break;
+    }
+    __gfxCtx->polyOpa.p = Play_SetFog(play, __gfxCtx->polyOpa.p);
+    if (this->actionFunc == func_80A04890) {
+        gDPPipeSync(POLY_XLU_DISP++);
+        gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, 0xFF, 0xFF, 0xC8, 0xC8);
+        gDPSetEnvColor(POLY_XLU_DISP++, 0xFF, 0xFF, 0x64, 0x80);
+        Matrix_Translate(this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, MTXMODE_NEW);
+        Matrix_Scale(this->unk188C, this->unk188C, 0.0f, MTXMODE_APPLY);
+        Matrix_ReplaceRotation(&play->billboardMtxF);
+        Matrix_RotateZS(this->unk18C8, MTXMODE_APPLY);
+        gSPMatrix(POLY_XLU_DISP++, Matrix_NewMtx(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
+        gSPDisplayList(POLY_XLU_DISP++, &D_04023348);
+        gSPDisplayList(POLY_XLU_DISP++, &D_04023428);
+    }
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A05AF8.s")
 

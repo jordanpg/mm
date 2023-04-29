@@ -24,9 +24,9 @@ typedef struct Boss07 {
     /* 0x014E */ u8 unk14E;
     /* 0x014F */ s8 pad14F;
     /* 0x0150 */ s16 unk150[3];
-    /* 0x0156 */ char pad156[6];                    /* maybe part of unk154[4]? */
+    /* 0x0156 */ char pad156[6];
     /* 0x015C */ s16 unk15C;
-    /* 0x015E */ s16 unk15E;                        /* inferred */
+    /* 0x015E */ s16 unk15E;
     /* 0x0160 */ char pad160[4];                    /* maybe part of unk15E[3]? */
     /* 0x0164 */ Vec3f unk164;
     /* 0x0170 */ f32 unk170;
@@ -88,11 +88,15 @@ typedef struct Boss07 {
     /* 0x1820 */ ColliderCylinder unk1820;
     /* 0x186C */ char pad186C[0x1C];
     /* 0x1888 */ s8 unk1888;
-    /* 0x1889 */ char pad1889[0x43];                /* maybe part of unk1888[0x44]? */
-    /* 0x18CC */ f32 unk18CC;                       /* inferred */
-    /* 0x18D0 */ f32 unk18D0;                       /* inferred */
+    /* 0x1889 */ char pad1889[3];                   /* maybe part of unk1888[4]? */
+    /* 0x188C */ f32 unk188C;                       /* inferred */
+    /* 0x1890 */ char pad1890[0x38];                /* maybe part of unk188C[0xF]? */
+    /* 0x18C8 */ s16 unk18C8;                       /* inferred */
+    /* 0x18CA */ char pad18CA[2];
+    /* 0x18CC */ f32 unk18CC;
+    /* 0x18D0 */ f32 unk18D0;
     /* 0x18D4 */ char pad18D4[2];
-    /* 0x18D6 */ s16 unk18D6;                       /* inferred */
+    /* 0x18D6 */ s16 unk18D6;
     /* 0x18D8 */ char pad18D8[4];                   /* maybe part of unk18D6[3]? */
     /* 0x18DC */ s32 unk18DC;
     /* 0x18E0 */ char pad18E0[0x10];                /* maybe part of unk18DC[5]? */

@@ -36,7 +36,15 @@ void func_809F8B1C(Boss07* this, PlayState* play);
 void func_809F8D04(Boss07* this, PlayState* play);
 void func_809F8EC8(Boss07* this, PlayState* play);
 void func_809F91D4(Boss07* this, PlayState* play);
-void func_809FAA44(Boss07* this, PlayState* play, void* arg2, void* arg3, s32 arg4, f32* arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9, void* argA, s16 argB, f32 argC, s32 argD);
+void func_809FAA44(Boss07* this, PlayState* play, Vec3f* arg2, Vec3f* arg3, Vec3f* arg4, Vec3f* arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9, Vec3s* argA, s32 argB, f32 argC, s32 argD);
+void func_809FB114(Boss07* this, PlayState* play, Vec3f* arg2, Vec3f* arg3, f32 arg4, s32 arg5);
+s32 func_809FB504(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot, Actor* thisx);
+void func_809FB55C(PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* rot, Actor* thisx);
+void func_809FB728(PlayState* play, s32 limbIndex, Actor* thisx);
+void func_809FB7D4(Boss07*, PlayState*);
+void func_809FBB9C(Boss07*, PlayState*, Vec3f*);
+void func_809FC8B0(void*, Boss07*, PlayState*);
+void func_809FC960(void*, Boss07*, PlayState*);
 void func_809FCCCC(Boss07* this, PlayState* play);
 void func_809FD710(Boss07* this, PlayState* play);
 void func_809FD89C(Boss07* this, PlayState* play);
@@ -428,6 +436,7 @@ static Vec3f D_80A07F6C[5] = {
     { 30.0f, 430.0f, 110.0f },
 };
 
+static Vec3f D_80A07FE0 = { 0.0f, 0.0f, 0.0f };
 #endif
 
 extern DamageTable D_80A07980;
@@ -448,6 +457,7 @@ extern ColliderCylinderInit D_80A07E78;
 extern ColliderCylinderInit D_80A07EA4;
 extern ColliderCylinderInit D_80A07ED0;
 extern Vec3f D_80A07F6C[5];
+extern Vec3f D_80A07FE0;
 extern Vec3f D_80A09A40;
 extern s8 D_80A09A4C;
 extern s32 D_80A09A50;
@@ -992,7 +1002,44 @@ void func_809F805C(Boss07 *this, PlayState *play) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809FBF94.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/Boss07_Draw.s")
+// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/Boss07_Draw.s")
+void Boss07_Draw(Actor* thisx, PlayState* play) {
+    char pad[6];
+    void* graph;
+    GraphicsContext* __gfxCtx;
+    Boss07* this = (Boss07* ) thisx;
+    Vec3f newPos;
+
+    graph = GRAPH_ALLOC(play->state.gfxCtx, 0x1000);
+    __gfxCtx = play->state.gfxCtx;
+    func_8012C28C(play->state.gfxCtx);
+    func_8012C2DC(play->state.gfxCtx);
+    if (this->damageFlash & 1) {
+        __gfxCtx->polyOpa.p = Gfx_SetFog(__gfxCtx->polyOpa.p, 0xFF, 0, 0, 0xFF, 0x384, 0x44B);
+    }
+    Matrix_RotateYF(this->hoseiYa, MTXMODE_APPLY);
+    Matrix_RotateXFApply(this->hoseiXa);
+    SkelAnime_DrawTransformFlexOpa(play, this->skelAnime.skeleton, this->skelAnime.jointTable, this->skelAnime.dListCount, func_809FB504, func_809FB55C, func_809FB728, &this->actor);
+    __gfxCtx->polyOpa.p = Play_SetFog(play, __gfxCtx->polyOpa.p);
+    if (((KREG(63) == 0) || (KREG(63) == 2)) && (this->moveFlag != 0)) {
+        func_809FAA44(this, play, &this->mutiBasePos, this->mutiPos, this->mutiAngle, this->mutiSpd, this->mutiG, this->kanseiPower, this->kanseiBrake, this->hari, &this->handA, this->maki, this->mutiBaseScale, 0);
+        func_809FAA44(this, play, &this->mutiBasePos2, this->mutiPos2, this->mutiAngle2, this->mutiSpd2, this->mutiG2, this->kanseiPower2, this->kanseiBrake2, this->hari2, &this->handA2, 0, this->mutiBaseScale, 1);
+    }
+
+    func_809FB114(this, play, this->mutiPos, this->mutiAngle, this->mutiBaseScale, 0);
+    func_809FB114(this, play, this->mutiPos2, this->mutiAngle2, this->mutiBaseScale, 1);
+    if (this->shadowOff == 0) {
+        func_809FC8B0(graph, this, play);
+        func_809FC960(graph, this, play);
+    }
+    func_809FB7D4(this, play);
+    newPos.x = this->shapePos[2].x;
+    newPos.y = (this->shapePos[2].y - 30.0f) + 50.0f;
+    newPos.z = this->shapePos[2].z;
+    func_809FBB9C(this, play, &newPos);
+    Actor_DrawDamageEffects(play, &this->actor, this->shapePos, 0xF, this->effScale1, this->effScale2, this->effAlpha, this->effNo);
+    this->moveFlag = 0;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809FC4C0.s")
 

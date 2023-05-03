@@ -36,6 +36,7 @@ void func_809F8B1C(Boss07* this, PlayState* play);
 void func_809F8D04(Boss07* this, PlayState* play);
 void func_809F8EC8(Boss07* this, PlayState* play);
 void func_809F91D4(Boss07* this, PlayState* play);
+void func_809FAA44(Boss07* this, PlayState* play, void* arg2, void* arg3, s32 arg4, f32* arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9, void* argA, s16 argB, f32 argC, s32 argD);
 void func_809FCCCC(Boss07* this, PlayState* play);
 void func_809FD710(Boss07* this, PlayState* play);
 void func_809FD89C(Boss07* this, PlayState* play);
@@ -568,10 +569,10 @@ void Boss07_Destroy(Actor *thisx, PlayState *play) {
 
     switch (this->actor.params) {
         case 0x1E:
-            Collider_DestroyQuad(play, &this->unk18F0);
-            Collider_DestroyQuad(play, &this->unk1970);
+            Collider_DestroyQuad(play, &this->maskSwrdInfo);
+            Collider_DestroyQuad(play, &this->maskSwrdInfo2);
         case 0xB4:
-            Effect_Destroy(play, this->unk18DC);
+            Effect_Destroy(play, this->blureEffectIndex);
             return;
     }
 }
@@ -581,9 +582,9 @@ void func_809F5E14(Boss07 *this, PlayState *play) {
     this->actionFunc = func_809F5E88;
     Animation_MorphToLoop(&this->skelAnime, &D_06023DAC, 0.0f);
     this->actor.flags &= ~1;
-    this->unk17D8 = 0x7F00;
-    this->unk15C = 0x14;
-    this->unk17E8 = 5120.0f;
+    this->headAngle.x = 0x7F00;
+    this->damage = 0x14;
+    this->hensinScaleS1 = 5120.0f;
 }
 
 // #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F5E88.s")
@@ -593,38 +594,38 @@ void func_809F5E88(Boss07 *this, PlayState *play) {
     u32 index;
     Camera *camera;
 
-    this->unk15C = 0x14;
+    this->damage = 0x14;
     SkelAnime_Update(&this->skelAnime);
-    this->unkABC8++;
+    this->demoTime++;
     Matrix_Translate(this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, MTXMODE_NEW);
     Matrix_RotateYS(this->actor.shape.rot.y, MTXMODE_APPLY);
 
-    switch(this->unkABD0) {
+    switch(this->demoMode) {
         case 0:
-            this->unkABC8 = 0;
-            this->unkABD0 = 1;
-            this->unkABF8.z = 0.0f;
-            this->unkABEC.x = 0.0f;
-            this->unkABEC.y = (((f32) KREG(17) + 100.0f) - 30.0f) + 80.0f;
-            this->unkABEC.z = ((((f32) KREG(18) + 270.0f) - 150.0f) + 30.0f) - 50.0f;
-            this->unkABF8.x = 0.0f;
-            this->unkABF8.y = 180.0f;
+            this->demoTime = 0;
+            this->demoMode = 1;
+            this->wayTarget.z = 0.0f;
+            this->eyeTarget.x = 0.0f;
+            this->eyeTarget.y = (((f32) KREG(17) + 100.0f) - 30.0f) + 80.0f;
+            this->eyeTarget.z = ((((f32) KREG(18) + 270.0f) - 150.0f) + 30.0f) - 50.0f;
+            this->wayTarget.x = 0.0f;
+            this->wayTarget.y = 180.0f;
         case 1:
-            if (this->unkABC8 < 0x28U) {
+            if (this->demoTime < 0x28U) {
                 D_80A09A4C = 3;
             }
-            if (this->unkABC8 >= 0x15U) {
-                if (this->unkABC8 == 0x15) {
+            if (this->demoTime >= 0x15U) {
+                if (this->demoTime == 0x15) {
                     Actor_PlaySfx(&this->actor, 0x39BBU);
                 }
-                Math_ApproachS(&this->unk17D8, 0, 5, 0x1000);
-                this->unk17DA = (s16) (Math_SinS((this->unkABC8 << 0xC)) * this->unk17E8);
-                this->unk17DC = (s16) (Math_SinS((this->unkABC8 * 0xB00)) * this->unk17E8 * 0.5f);
-                if (this->unkABC8 >= 0x29U) {
-                    Math_ApproachZeroF(&this->unk17E8, 1.0f, 200.0f);
+                Math_ApproachS(&this->headAngle.x, 0, 5, 0x1000);
+                this->headAngle.y = (s16) (Math_SinS((this->demoTime << 0xC)) * this->hensinScaleS1);
+                this->headAngle.z = (s16) (Math_SinS((this->demoTime * 0xB00)) * this->hensinScaleS1 * 0.5f);
+                if (this->demoTime >= 0x29U) {
+                    Math_ApproachZeroF(&this->hensinScaleS1, 1.0f, 200.0f);
                 }
             }
-            if (this->unkABC8 >= 0x3DU) {
+            if (this->demoTime >= 0x3DU) {
                 index = 0;
                 player = GET_PLAYER(play);
                 if (player->transformation == 1) {
@@ -636,46 +637,46 @@ void func_809F5E88(Boss07 *this, PlayState *play) {
                 } else if (player->transformation == 3) {
                     index = 4;
                 }
-                Math_ApproachF(&this->unkABEC.y, D_80A07F6C[index].x, 0.075f, this->unkAC0C * 7.0f);
-                Math_ApproachF(&this->unkABEC.z, D_80A07F6C[index].y, 0.075f, this->unkAC0C * 17.0f);
-                Math_ApproachF(&this->unkABF8.y, D_80A07F6C[index].z, 0.075f, this->unkAC0C * 7.0f);
-                Math_ApproachF(&this->unkAC0C, 1.0f, 1.0f, 0.01f);
-                if (this->unkABC8 == 0x46) {
+                Math_ApproachF(&this->eyeTarget.y, D_80A07F6C[index].x, 0.075f, this->cameraMorf * 7.0f);
+                Math_ApproachF(&this->eyeTarget.z, D_80A07F6C[index].y, 0.075f, this->cameraMorf * 17.0f);
+                Math_ApproachF(&this->wayTarget.y, D_80A07F6C[index].z, 0.075f, this->cameraMorf * 7.0f);
+                Math_ApproachF(&this->cameraMorf, 1.0f, 1.0f, 0.01f);
+                if (this->demoTime == 0x46) {
                     Animation_MorphToPlayOnce(&this->skelAnime, (AnimationHeader *) &D_06025018, -15.0f);
-                    this->unk1D4 = (f32) Animation_GetLastFrame(&D_06025018);
+                    this->endFrame = (f32) Animation_GetLastFrame(&D_06025018);
                     func_8019FE1C(&this->actor.projectedPos, 0x290D, 0x3F800000);
                     Actor_PlaySfx(&this->actor, 0x39B9U);
                 }
-                if (this->unkABC8 >= 0x6EU) {
-                    Math_ApproachF(&this->unk77C, 1.0f, 1.0f, 0.05f);
-                    this->unk794 = 0.79999995f;
-                    this->unkFA0 = 0.79999995f;
-                    this->unk798 = 1.0f;
-                    this->unkFA4 = 1.0f;
+                if (this->demoTime >= 0x6EU) {
+                    Math_ApproachF(&this->mutiBaseScale, 1.0f, 1.0f, 0.05f);
+                    this->kanseiPower = 0.79999995f;
+                    this->kanseiPower2 = 0.79999995f;
+                    this->kanseiBrake = 1.0f;
+                    this->kanseiBrake2 = 1.0f;
                 }
-                if (this->unkABC8 == 0x7F) {
-                    this->unk77C = 1.0f;
+                if (this->demoTime == 0x7F) {
+                    this->mutiBaseScale = 1.0f;
                 }
-                if (this->unkABC8 == 0x78) {
+                if (this->demoTime == 0x78) {
                     Actor_PlaySfx(&this->actor, 0x39CEU);
                     Audio_PlaySfxAtPos(&D_80A09A40, 0x3A53U);
                     func_8019FE74(&gSfxVolume, 0.0f, 0x3C);
                 }
-                if (this->unkABC8 == 0x70) {
+                if (this->demoTime == 0x70) {
                     AudioSeq_QueueSeqCmd(0x8069U);
                 }
-                if (this->unkABC8 == 0x89) {
+                if (this->demoTime == 0x89) {
                     TitleCard_InitBossName(&play->state, &play->actorCtx.titleCtxt, Lib_SegmentedToVirtual(&D_06032040), 0xA0, 0xB4, 0x80, 0x28);
                 }
-                if (Animation_OnFrame(&this->skelAnime, this->unk1D4) != 0) {
+                if (Animation_OnFrame(&this->skelAnime, this->endFrame) != 0) {
                     camera = Play_GetCamera(play, 0);
-                    this->unkABD0 = 0;
+                    this->demoMode = 0;
                     func_809F7400(this, play, 0x32);
-                    camera->eye = this->unkABD4;
-                    camera->eyeNext = this->unkABD4;
-                    camera->at = this->unkABE0;
-                    func_80169AFC(play, this->unkABD2, 0);
-                    this->unkABD2 = 0;
+                    camera->eye = this->eye;
+                    camera->eyeNext = this->eye;
+                    camera->at = this->way;
+                    func_80169AFC(play, this->cameraNo, 0);
+                    this->cameraNo = 0;
                     Cutscene_StopManual(play, &play->csCtx);
                     func_800B7298(play, &this->actor, 6);
                     this->actor.flags |= 1;
@@ -691,11 +692,11 @@ void func_809F5E88(Boss07 *this, PlayState *play) {
         default:
             break;
     }
-    Matrix_MultVec3f(&this->unkABEC, &this->unkABD4);
-    Matrix_MultVec3f(&this->unkABF8, &this->unkABE0);
-    if (this->unkABD2 != 0) {
+    Matrix_MultVec3f(&this->eyeTarget, &this->eye);
+    Matrix_MultVec3f(&this->wayTarget, &this->way);
+    if (this->cameraNo != 0) {
         ShrinkWindow_Letterbox_SetSizeTarget(0x1B);
-        Play_SetCameraAtEye(play, this->unkABD2, &this->unkABE0, &this->unkABD4);
+        Play_SetCameraAtEye(play, this->cameraNo, &this->way, &this->eye);
     }
 }
 
@@ -708,9 +709,9 @@ void func_809F7400(Boss07 *this, PlayState *play, s16 arg2) {
     this->actionFunc = func_809F748C;
     Animation_MorphToLoop(&this->skelAnime, &D_0603CBD0, -10.0f);
     if (arg2 != 0) {
-        this->unk150[0] = arg2;
+        this->timer[0] = arg2;
     } else {
-        this->unk150[0] = (s16) Rand_ZeroFloat(30.0f);
+        this->timer[0] = (s16) Rand_ZeroFloat(30.0f);
     }
     this->actor.flags |= 1;
 }
@@ -736,205 +737,205 @@ void func_809F7D2C(Boss07* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
     this->actionFunc = func_809F805C;
-    this->unk150[1] = 0;
+    this->timer[1] = 0;
     if (player->stateFlags3 & 0x100) {
-        this->unk14E = 4;
+        this->moveMode = 4;
     } else {
         if (this->actor.xzDistToPlayer <= 300.0f) {
             if (this->actor.xzDistToPlayer <= 200.0f) {
-                this->unk14E = 7;
+                this->moveMode = 7;
             } else {
-                this->unk14E = 4;
+                this->moveMode = 4;
             }
         } else {
-            this->unk14E = (u32) Rand_ZeroFloat(6.99f);
-            if (((s8) this->actor.colChkInfo.health >= 0x1C) && ((this->unk14E == 1) || (this->unk14E == 2))) {
-                this->unk14E = 0;
+            this->moveMode = (u32) Rand_ZeroFloat(6.99f);
+            if (((s8) this->actor.colChkInfo.health >= 0x1C) && ((this->moveMode == 1) || (this->moveMode == 2))) {
+                this->moveMode = 0;
             }
         }
     }
-    switch (this->unk14E) {
+    switch (this->moveMode) {
         case 0:
             Animation_MorphToPlayOnce(&this->skelAnime, &D_06033F80, -5.0f);
-            this->unk1D4 = Animation_GetLastFrame(&D_06033F80);
+            this->endFrame = Animation_GetLastFrame(&D_06033F80);
             break;
         case 1:
             Animation_MorphToPlayOnce(&this->skelAnime, &D_06034E64, -5.0f);
-            this->unk1D4 = Animation_GetLastFrame(&D_06034E64);
+            this->endFrame = Animation_GetLastFrame(&D_06034E64);
             break;
         case 2:
             Animation_MorphToPlayOnce(&this->skelAnime, &D_060358C4, -5.0f);
-            this->unk1D4 = Animation_GetLastFrame(&D_060358C4);
+            this->endFrame = Animation_GetLastFrame(&D_060358C4);
             break;
         case 3:
             Animation_MorphToPlayOnce(&this->skelAnime, &D_06036A7C, -5.0f);
-            this->unk1D4 = Animation_GetLastFrame(&D_06036A7C);
+            this->endFrame = Animation_GetLastFrame(&D_06036A7C);
             break;
         case 4:
             Animation_MorphToPlayOnce(&this->skelAnime, &D_0603C4E0, -5.0f);
-            this->unk1D4 = Animation_GetLastFrame(&D_0603C4E0);
-            func_809F4D10(&this->unk164, 650.0f);
-            this->unk170 = 0.0f;
+            this->endFrame = Animation_GetLastFrame(&D_0603C4E0);
+            func_809F4D10(&this->target, 650.0f);
+            this->targetSp = 0.0f;
             break;
         case 5:
             Animation_MorphToPlayOnce(&this->skelAnime, &D_06037ADC, -5.0f);
-            this->unk1D4 = Animation_GetLastFrame(&D_06037ADC);
+            this->endFrame = Animation_GetLastFrame(&D_06037ADC);
             break;
         case 6:
             Animation_MorphToPlayOnce(&this->skelAnime, &D_0603918C, -5.0f);
-            this->unk1D4 = Animation_GetLastFrame(&D_0603918C);
+            this->endFrame = Animation_GetLastFrame(&D_0603918C);
             break;
         case 7:
             Animation_MorphToPlayOnce(&this->skelAnime, &D_06026204, -5.0f);
-            this->unk1D4 = Animation_GetLastFrame(&D_06026204);
+            this->endFrame = Animation_GetLastFrame(&D_06026204);
             break;
     }
-    this->unk14C = 0;
+    this->count = 0;
 }
 
 // #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F805C.s")
 void func_809F805C(Boss07 *this, PlayState *play) {
     SkelAnime_Update(&this->skelAnime);
     func_809F4CBC(this, 2.0f);
-    this->unk794 = 0.79999995f;
-    this->unkFA0 = 0.79999995f;
-    this->unk790 = -5.0f;
-    this->unkF9C = -5.0f;
-    this->unk79C = 0.0f;
-    this->unkFA8 = 0.0f;
-    this->unk798 = 1.0f;
-    this->unkFA4 = 1.0f;
-    if (this->unk14C >= 0x15) {
-        this->unk174 = 1;
+    this->kanseiPower = 0.79999995f;
+    this->kanseiPower2 = 0.79999995f;
+    this->mutiG = -5.0f;
+    this->mutiG2 = -5.0f;
+    this->hari = 0.0f;
+    this->hari2 = 0.0f;
+    this->kanseiBrake = 1.0f;
+    this->kanseiBrake2 = 1.0f;
+    if (this->count >= 0x15) {
+        this->defenseOk = 1;
     }
-    switch (this->unk14E) {
+    switch (this->moveMode) {
         case 0:
-            if (this->unk14C == (s16) (KREG(92) + 1)) {
+            if (this->count == (s16) (KREG(92) + 1)) {
                 Audio_PlaySfxAtPos(&D_80A09A40, NA_SE_EN_LAST3_VOICE_ROD_OLD);
             }
-            if ((this->unk14C >= 0xF) && (this->unk14C < 0x12)) {
-                this->unk79C = 500.0f;
+            if ((this->count >= 0xF) && (this->count < 0x12)) {
+                this->hari = 500.0f;
             }
-            if (this->unk14C == 9) {
-                this->pad14F = 0xB;
+            if (this->count == 9) {
+                this->swingSe = 0xB;
             }
-            if (this->unk14C == 1) {
+            if (this->count == 1) {
                 Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_ROD_HOP_OLD);
             }
-            if (this->unk14C == 0xA) {
+            if (this->count == 0xA) {
                 Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_ROD_WIND_OLD);
             }
             break;
         case 1:
-            if (this->unk14C == (s16) (KREG(91) + 3)) {
+            if (this->count == (s16) (KREG(91) + 3)) {
                 Audio_PlaySfxAtPos(&D_80A09A40, NA_SE_EN_LAST3_VOICE_THROW_OLD);
             }
-            if ((this->unk14C >= 8) && (this->unk14C < 0x38)) {
-                this->unk79C = 300.0f;
-                this->unkFA8 = 300.0f;
-                if (!((this->unk14C + 2) & 3) && (Rand_ZeroOne() < 0.5f)) {
+            if ((this->count >= 8) && (this->count < 0x38)) {
+                this->hari = 300.0f;
+                this->hari2 = 300.0f;
+                if (!((this->count + 2) & 3) && (Rand_ZeroOne() < 0.5f)) {
                     play_sound(NA_SE_EN_LAST3_ROD_FLOOR_OLD);
                 }
-                if (!(this->unk14C & 3)) {
+                if (!(this->count & 3)) {
                     Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_ROD_WIND_OLD);
                 }
                 Math_ApproachS(&this->actor.shape.rot.y, this->actor.yawTowardsPlayer, 0xA, 0x1000);
             }
             break;
         case 2:
-            if (this->unk14C == (s16) (KREG(84) + 5)) {
+            if (this->count == (s16) (KREG(84) + 5)) {
                 Audio_PlaySfxAtPos(&D_80A09A40, NA_SE_EN_LAST3_VOICE_ROD_OLD);
             }
-            if ((this->unk14C >= 0x20) && (this->unk14C < 0x27)) {
-                this->unk79C = 300.0f;
-                this->unkFA8 = 300.0f;
+            if ((this->count >= 0x20) && (this->count < 0x27)) {
+                this->hari = 300.0f;
+                this->hari2 = 300.0f;
             }
-            if (this->unk14C == 0x1C) {
-                this->pad14F = 0xB;
+            if (this->count == 0x1C) {
+                this->swingSe = 0xB;
             }
-            if (this->unk14C == 0xA) {
+            if (this->count == 0xA) {
                 Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_ROD_HOP_OLD);
             }
-            if (this->unk14C == 0x20) {
+            if (this->count == 0x20) {
                 Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_ROD_WIND_OLD);
             }
             break;
         case 3:
-            if (this->unk14C == (s16) (KREG(84) + 5)) {
+            if (this->count == (s16) (KREG(84) + 5)) {
                 Audio_PlaySfxAtPos(&D_80A09A40, NA_SE_EN_LAST3_VOICE_ROD_OLD);
             }
-            if ((this->unk14C >= 0x1F) && (this->unk14C < 0x24)) {
-                this->unk79C = 1200.0f;
+            if ((this->count >= 0x1F) && (this->count < 0x24)) {
+                this->hari = 1200.0f;
             }
-            if (this->unk14C == 0x17) {
-                this->pad14F = 0xB;
+            if (this->count == 0x17) {
+                this->swingSe = 0xB;
             }
-            Math_ApproachF(&this->unk184, -0.1f, 0.5f, 0.1f);
-            Math_ApproachF(&this->unk188, 0.3f, 0.5f, 0.1f);
-            if (this->unk14C == 5) {
+            Math_ApproachF(&this->hoseiYa, -0.1f, 0.5f, 0.1f);
+            Math_ApproachF(&this->hoseiXa, 0.3f, 0.5f, 0.1f);
+            if (this->count == 5) {
                 Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_ROD_HOP_OLD);
             }
-            if (this->unk14C == 0x1E) {
+            if (this->count == 0x1E) {
                 Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_ROD_WIND_OLD);
             }
             break;
         case 4:
-            if ((this->unk14C >= 0x11) && (this->unk14C < 0x29)) {
-                this->unk79C = 200.0f;
-                this->unkFA8 = 200.0f;
-                if (!(this->unk14C & 7)) {
+            if ((this->count >= 0x11) && (this->count < 0x29)) {
+                this->hari = 200.0f;
+                this->hari2 = 200.0f;
+                if (!(this->count & 7)) {
                     Audio_PlaySfxAtPos(&D_80A09A40, NA_SE_EN_LAST3_VOICE_KOMA_OLD);
                 }
                 Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_ROD_DANCE_OLD - SFX_FLAG);
-                Math_ApproachF(&this->actor.world.pos.x, this->unk164.x, 0.1f, this->unk170);
-                Math_ApproachF(&this->actor.world.pos.z, this->unk164.z, 0.1f, this->unk170);
-                Math_ApproachF(&this->unk170, 20.0f, 1.0f, 4.0f);
+                Math_ApproachF(&this->actor.world.pos.x, this->target.x, 0.1f, this->targetSp);
+                Math_ApproachF(&this->actor.world.pos.z, this->target.z, 0.1f, this->targetSp);
+                Math_ApproachF(&this->targetSp, 20.0f, 1.0f, 4.0f);
                 Math_ApproachS(&this->actor.shape.rot.y, this->actor.yawTowardsPlayer, 5, 0x2000);
-                this->unk174 = 0;
+                this->defenseOk = 0;
             }
             break;
         case 7:
-            this->unk174 = 0;
-            if (this->unk14C == 3) {
+            this->defenseOk = 0;
+            if (this->count == 3) {
                 Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_VOICE_KICK_OLD);
             }
             break;
         case 5:
-            this->unkFA0 = 0.7f;
-            this->unk794 = 0.7f;
-            this->unk790 = -15.0f;
-            this->unkF9C = -15.0f;
+            this->kanseiPower2 = 0.7f;
+            this->kanseiPower = 0.7f;
+            this->mutiG = -15.0f;
+            this->mutiG2 = -15.0f;
             Math_ApproachS(&this->actor.shape.rot.y, this->actor.yawTowardsPlayer, 0xA, 0x1000);
-            this->unk174 = 1;
+            this->defenseOk = 1;
             break;
         case 6:
-            if (this->unk14C == (s16) (KREG(85) + 5)) {
+            if (this->count == (s16) (KREG(85) + 5)) {
                 Audio_PlaySfxAtPos(&D_80A09A40, NA_SE_EN_LAST3_VOICE_ROD_OLD);
             }
-            if ((this->unk14C >= 0xE) && (this->unk14C < 0x13)) {
-                this->unk79C = 150.0f;
+            if ((this->count >= 0xE) && (this->count < 0x13)) {
+                this->hari = 150.0f;
             }
-            if ((this->unk14C >= 0x17) && (this->unk14C < 0x1D)) {
-                this->unkFA8 = 200.0f;
+            if ((this->count >= 0x17) && (this->count < 0x1D)) {
+                this->hari2 = 200.0f;
             }
-            if ((this->unk14C >= 0x2B) && (this->unk14C < 0x31)) {
-                this->unk79C = 200.0f;
+            if ((this->count >= 0x2B) && (this->count < 0x31)) {
+                this->hari = 200.0f;
             }
             Math_ApproachS(&this->actor.shape.rot.y, this->actor.yawTowardsPlayer, 0xA, 0x1000);
-            if (this->unk14C == 0x14) {
+            if (this->count == 0x14) {
                 Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_ROD_HOP_OLD);
                 Audio_PlaySfxAtPos(&D_80A09A40, NA_SE_EN_LAST3_VOICE_ROD_OLD);
             }
-            if (this->unk14C == 5) {
+            if (this->count == 5) {
                 Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_ROD_HOP2_OLD);
             }
-            if (this->unk14C == 0x29) {
+            if (this->count == 0x29) {
                 Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_ROD_WIND_OLD);
                 Audio_PlaySfxAtPos(&D_80A09A40, NA_SE_EN_LAST3_VOICE_ROD_OLD);
             }
             break;
     }
-    if ((Animation_OnFrame(&this->skelAnime, this->unk1D4) != 0) || (this->unk150[1] == 1)) {
+    if ((Animation_OnFrame(&this->skelAnime, this->endFrame) != 0) || (this->timer[1] == 1)) {
         func_809F7400(this, play, 0);
     }
 }
@@ -1120,31 +1121,31 @@ void func_809F805C(Boss07 *this, PlayState *play) {
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A05608.s")
 
 // #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A05694.s")
-/** Update function when params >= 0xC8 (remains?); seems to move the actor laterally while slowly reducing velocity and some other properties */
+/** Update function when params >= 0xC8 (remains?); handles damage knockback & related timers */
 void func_80A05694(Boss07* this, PlayState* play) {
     u32 i;
 
-    this->unk14C++;
-    for(i = 0; i < ARRAY_COUNT(this->unk150); i++) {
-        if(this->unk150[i] != 0) {
-            this->unk150[i]--;
+    this->count++;
+    for(i = 0; i < ARRAY_COUNT(this->timer); i++) {
+        if(this->timer[i] != 0) {
+            this->timer[i]--;
         }
     }
-    if (this->unk18D6 != 0) {
-        this->unk18D6--;
+    if (this->fireTime != 0) {
+        this->fireTime--;
     }
-    if (this->unk15C != 0) {
-        this->unk15C--;
+    if (this->damage != 0) {
+        this->damage--;
     }
-    if (this->unk15E != 0) {
-        this->unk15E--;
+    if (this->damageFlash != 0) {
+        this->damageFlash--;
     }
     this->actionFunc(this, play);
     this->actor.focus.pos = this->actor.world.pos;
-    this->actor.world.pos.x += this->unk18CC;
-    this->actor.world.pos.z += this->unk18D0;
-    Math_ApproachZeroF(&this->unk18CC, 1.0f, 1.0f);
-    Math_ApproachZeroF(&this->unk18D0, 1.0f, 1.0f);
+    this->actor.world.pos.x += this->damageSpeedX;
+    this->actor.world.pos.z += this->damageSpeedZ;
+    Math_ApproachZeroF(&this->damageSpeedX, 1.0f, 1.0f);
+    Math_ApproachZeroF(&this->damageSpeedZ, 1.0f, 1.0f);
 }
 
 // #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A057A0.s")
@@ -1159,12 +1160,12 @@ void func_80A057A0(Actor* thisx, PlayState* play) {
 
     __gfxCtx = play->state.gfxCtx;
     func_8012C28C(play->state.gfxCtx);
-    if (this->unk15E & 1) {
+    if (this->damageFlash & 1) {
         __gfxCtx->polyOpa.p = Gfx_SetFog(__gfxCtx->polyOpa.p, 0xFF, 0, 0, 0xFF, 0x384, 0x44B);
     }
-    sp64 = this->unk15C * DEG_TO_RAD(45) * 0.06666667f;
-    sp60 = Math_SinS(this->unk15C * 0x3500) * sp64 * 0.5f;
-    Matrix_RotateYF(Math_SinS(this->unk15C * 0x4500) * sp64, MTXMODE_APPLY);
+    sp64 = this->damage * DEG_TO_RAD(45) * 0.06666667f;
+    sp60 = Math_SinS(this->damage * 0x3500) * sp64 * 0.5f;
+    Matrix_RotateYF(Math_SinS(this->damage * 0x4500) * sp64, MTXMODE_APPLY);
     Matrix_RotateXFApply(sp60);
     gSPMatrix(POLY_OPA_DISP++, Matrix_NewMtx(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
     switch (this->actor.params) {
@@ -1187,9 +1188,9 @@ void func_80A057A0(Actor* thisx, PlayState* play) {
         gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, 0xFF, 0xFF, 0xC8, 0xC8);
         gDPSetEnvColor(POLY_XLU_DISP++, 0xFF, 0xFF, 0x64, 0x80);
         Matrix_Translate(this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, MTXMODE_NEW);
-        Matrix_Scale(this->unk188C, this->unk188C, 0.0f, MTXMODE_APPLY);
+        Matrix_Scale(this->beamScale1, this->beamScale1, 0.0f, MTXMODE_APPLY);
         Matrix_ReplaceRotation(&play->billboardMtxF);
-        Matrix_RotateZS(this->unk18C8, MTXMODE_APPLY);
+        Matrix_RotateZS(this->beamSang.z, MTXMODE_APPLY);
         gSPMatrix(POLY_XLU_DISP++, Matrix_NewMtx(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
         gSPDisplayList(POLY_XLU_DISP++, &D_04023348);
         gSPDisplayList(POLY_XLU_DISP++, &D_04023428);

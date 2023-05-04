@@ -629,7 +629,7 @@ void func_809F5E88(Boss07 *this, PlayState *play) {
             }
             if (this->demoTime >= 0x15U) {
                 if (this->demoTime == 0x15) {
-                    Actor_PlaySfx(&this->actor, 0x39BBU);
+                    Actor_PlaySfx(&this->actor, NA_SE_EN_LAST2_GROW_HEAD_OLD);
                 }
                 Math_ApproachS(&this->headAngle.x, 0, 5, 0x1000);
                 this->headAngle.y = (s16) (Math_SinS((this->demoTime << 0xC)) * this->hensinScaleS1);
@@ -658,7 +658,7 @@ void func_809F5E88(Boss07 *this, PlayState *play) {
                     Animation_MorphToPlayOnce(&this->skelAnime, (AnimationHeader *) &D_06025018, -15.0f);
                     this->endFrame = (f32) Animation_GetLastFrame(&D_06025018);
                     func_8019FE1C(&this->actor.projectedPos, 0x290D, 0x3F800000);
-                    Actor_PlaySfx(&this->actor, 0x39B9U);
+                    Actor_PlaySfx(&this->actor, NA_SE_EN_LAST2_SHOUT);
                 }
                 if (this->demoTime >= 0x6EU) {
                     Math_ApproachF(&this->mutiBaseScale, 1.0f, 1.0f, 0.05f);
@@ -671,8 +671,8 @@ void func_809F5E88(Boss07 *this, PlayState *play) {
                     this->mutiBaseScale = 1.0f;
                 }
                 if (this->demoTime == 0x78) {
-                    Actor_PlaySfx(&this->actor, 0x39CEU);
-                    Audio_PlaySfxAtPos(&D_80A09A40, 0x3A53U);
+                    Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_ROD_HOP2_OLD);
+                    Audio_PlaySfxAtPos(&D_80A09A40, NA_SE_EN_LAST3_VOICE_KICK_OLD);
                     func_8019FE74(&gSfxVolume, 0.0f, 0x3C);
                 }
                 if (this->demoTime == 0x70) {
@@ -991,10 +991,10 @@ void func_809F8EC8(Boss07* this, PlayState* play) {
         Actor_Spawn(&play->actorCtx, play, 0x12F, this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 0xB4);
     }
     if (this->count == 0xA) {
-        Actor_PlaySfx(&this->actor, 0x39CAU);
+        Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_ROD_WIND_OLD);
     }
     if (this->count == (s16) (KREG(40) + 0x12)) {
-        Actor_PlaySfx(&this->actor, 0x3A54U);
+        Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_VOICE_KOMA_OLD);
     }
     var_a1 = (KREG(40) + 0xE);
     if ((this->count < var_a1) || ((s16) (KREG(41) + 0x11) < this->count)) {

@@ -479,9 +479,6 @@ extern Boss07 *D_80A09A60[4];
 extern s8 D_80A09A70;
 extern s8 D_80A09A71;
 extern UNK_TYPE D_80A09A78;
-extern s32 D_80A0A888;
-extern s32 D_80A0A88C;
-extern s32 D_80A0A890;
 
 extern void* D_04023348;
 extern void* D_04023428;
@@ -540,7 +537,13 @@ extern UNK_TYPE D_06040930;
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F4980.s")
 
-// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/Boss07_SeedRand.s")
+// static s32 sRandSeed0
+extern s32 D_80A0A888;
+// static s32 sRandSeed1
+extern s32 D_80A0A88C;
+// static s32 sRandSeed2
+extern s32 D_80A0A890;
+
 // Set random number seed
 void Boss07_SeedRand(s32 seed0, s32 seed1, s32 seed2) {
     D_80A0A888 = seed0;
@@ -548,7 +551,6 @@ void Boss07_SeedRand(s32 seed0, s32 seed1, s32 seed2) {
     D_80A0A890 = seed2;
 }
 
-// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/Boss07_RandZeroOne.s")
 // Generates a random number between 0 and 1
 f32 Boss07_RandZeroOne(void) {
     f32 rand;

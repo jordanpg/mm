@@ -2521,7 +2521,7 @@ void func_8019FC20(Vec3f* pos, u16 sfxId);
 void func_8019FCB8(Vec3f* arg0, u16 arg1, f32 arg2);
 void func_8019FD90(s8 arg0, s8 arg1);
 void func_8019FDC8(UNK_PTR arg0, u16 sfxId, UNK_TYPE arg2);
-// void func_8019FE1C(void);
+void func_8019FE1C(Vec3f * vec, s32 arg1, s32 arg2);
 void func_8019FE74(f32* arg0, f32 arg1, s32 arg2);
 // void func_8019FEDC(void);
 // void func_8019FF38(void);

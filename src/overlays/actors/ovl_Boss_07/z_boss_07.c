@@ -16,7 +16,7 @@ void Boss07_Destroy(Actor* thisx, PlayState* play);
 void Boss07_Update(Actor* thisx, PlayState* play);
 void Boss07_Draw(Actor* thisx, PlayState* play);
 
-void func_8019FE1C(Vec3f * vec, s32 arg1, s32 arg2);
+void func_809F49A0(s32 arg0, s32 arg1, s32 arg2);
 void func_809F4CBC(Boss07 * this, f32 maxStep);   
 void func_809F4D10(Vec3f* arg0, f32 arg1);
 void func_809F5E88(Boss07* this, PlayState* play);
@@ -458,6 +458,10 @@ extern ColliderJntSphInit D_80A07E68;
 extern ColliderCylinderInit D_80A07E78;
 extern ColliderCylinderInit D_80A07EA4;
 extern ColliderCylinderInit D_80A07ED0;
+// static struct _struct_D_80A07F3C_0x6 D_80A07F3C[4]; // Vec3s?
+extern s16 D_80A07F54[4];
+extern UNK_TYPE D_80A07F5C;
+extern UNK_TYPE D_80A07F64;
 extern Vec3f D_80A07F6C[5];
 extern Vec3f D_80A07FE0;
 extern Vec3f D_80A084D8;
@@ -471,11 +475,9 @@ extern Boss07 *D_80A09A60[4];
 extern s8 D_80A09A70;
 extern s8 D_80A09A71;
 extern UNK_TYPE D_80A09A78;
-extern UNK_TYPE D_80A0A888;
-// static struct _struct_D_80A07F3C_0x6 D_80A07F3C[4]; // Vec3s?
-extern s16 D_80A07F54[4];
-extern UNK_TYPE D_80A07F5C;                                /* unable to generate initializer */
-extern UNK_TYPE D_80A07F64;
+extern s32 D_80A0A888;
+extern s32 D_80A0A88C;
+extern s32 D_80A0A890;
 
 extern void* D_04023348;
 extern void* D_04023428;
@@ -534,7 +536,12 @@ extern UNK_TYPE D_06040930;
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F4980.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F49A0.s")
+// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F49A0.s")
+void func_809F49A0(s32 arg0, s32 arg1, s32 arg2) {
+    D_80A0A888 = arg0;
+    D_80A0A88C = arg1;
+    D_80A0A890 = arg2;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F49C0.s")
 

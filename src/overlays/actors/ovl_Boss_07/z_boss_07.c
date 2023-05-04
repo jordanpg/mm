@@ -437,6 +437,8 @@ static Vec3f D_80A07F6C[5] = {
 };
 
 static Vec3f D_80A07FE0 = { 0.0f, 0.0f, 0.0f };
+
+static Vec3f D_80A084D8 = { 3.1415927f, 0.2f, 0.2f };
 #endif
 
 extern DamageTable D_80A07980;
@@ -458,6 +460,7 @@ extern ColliderCylinderInit D_80A07EA4;
 extern ColliderCylinderInit D_80A07ED0;
 extern Vec3f D_80A07F6C[5];
 extern Vec3f D_80A07FE0;
+extern Vec3f D_80A084D8;
 extern Vec3f D_80A09A40;
 extern s8 D_80A09A4C;
 extern s32 D_80A09A50;
@@ -968,7 +971,60 @@ void func_809F805C(Boss07 *this, PlayState *play) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F8E68.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F8EC8.s")
+// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F8EC8.s")
+void func_809F8EC8(Boss07* this, PlayState* play) {
+    s16 var_a1;
+
+    this->hitOk = 0x14;
+    if (this->count < (s16) (KREG(40) + 0xE)) {
+        this->mutiKoma += 6;
+        if (this->mutiKoma >= 0x2D) {
+            this->mutiKoma = 0x2C;
+        }
+    }
+
+    if(this->count == 0) {
+        // Do nothing...
+    }
+    
+    if (this->count == 8) {
+        Actor_Spawn(&play->actorCtx, play, 0x12F, this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 0xB4);
+    }
+    if (this->count == 0xA) {
+        Actor_PlaySfx(&this->actor, 0x39CAU);
+    }
+    if (this->count == (s16) (KREG(40) + 0x12)) {
+        Actor_PlaySfx(&this->actor, 0x3A54U);
+    }
+    var_a1 = (KREG(40) + 0xE);
+    if ((this->count < var_a1) || ((s16) (KREG(41) + 0x11) < this->count)) {
+        SkelAnime_Update(&this->skelAnime);
+        var_a1 = KREG(40) + 0xE;
+    }
+    if ((this->count >= var_a1) && (((s16) (KREG(41) + 0x11) >= this->count) || (this->count >= (s16) (KREG(42) + 0x15)))) {
+        this->mutiKoma -= KREG(39) + 5;
+        if (this->mutiKoma < 0) {
+            this->mutiKoma = 0;
+        }
+    }
+    Math_ApproachS(&this->actor.shape.rot.y, (s16) ((KREG(8) << 8) + this->actor.yawTowardsPlayer + 0xF00), 3, 0x2000);
+    func_809F4CBC(this, 2.0f);
+    
+    this->kanseiPower = 0.79999995f;
+    this->kanseiPower2 = 0.79999995f;
+    this->kanseiBrake = 1.0f;
+    this->kanseiBrake2 = 1.0f;
+    this->mutiG = -5.0f;
+    this->hari = 0.0f;
+    this->hari2 = 0.0f;
+    this->mutiG2 = -15.0f;
+    if ((this->count >= (s16) (KREG(43) + 0xC)) && ((s16) (KREG(44) + 0x11) >= this->count)) {
+        this->hari = (f32) KREG(6) + 500.0f;
+    }
+    if (this->count >= (s16) (KREG(45) + 0x24)) {
+        func_809F7400(this, play, Rand_ZeroFloat(20.0f) + 20.0f);
+    }
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F91D4.s")
 

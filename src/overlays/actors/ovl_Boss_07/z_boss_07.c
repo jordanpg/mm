@@ -17,6 +17,7 @@ void Boss07_Update(Actor* thisx, PlayState* play);
 void Boss07_Draw(Actor* thisx, PlayState* play);
 
 void func_809F49A0(s32 arg0, s32 arg1, s32 arg2);
+f32 func_809F49C0(void);
 void func_809F4CBC(Boss07 * this, f32 maxStep);   
 void func_809F4D10(Vec3f* arg0, f32 arg1);
 void func_809F5E88(Boss07* this, PlayState* play);
@@ -441,6 +442,9 @@ static Vec3f D_80A07FE0 = { 0.0f, 0.0f, 0.0f };
 static Vec3f D_80A084D8 = { 3.1415927f, 0.2f, 0.2f };
 #endif
 
+extern s16 D_80A07950;
+extern s16 D_80A07952;
+extern s16 D_80A07954;
 extern DamageTable D_80A07980;
 extern DamageTable D_80A079A0;
 extern DamageTable D_80A079C0;
@@ -1061,7 +1065,49 @@ void func_809F8EC8(Boss07* this, PlayState* play) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809FB7D4.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809FBB9C.s")
+// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809FBB9C.s")
+void func_809FBB9C(Boss07* this, PlayState* play, Vec3f* arg2) {
+    s16 *r, *g, *b;
+    GraphicsContext* __gfxCtx;
+    f32 temp_fs0;
+    f32 temp_fa0_2;
+    s32 i;
+
+    __gfxCtx = play->state.gfxCtx;
+    if (this->demoBeamSize0 > 0.0f) {
+        func_809F49A0(1, 0x71B8, 0x263A);
+        __gfxCtx->polyXlu.p = Gfx_CallSetupDL(__gfxCtx->polyXlu.p, 20);
+        gDPSetCombineMode(POLY_XLU_DISP++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
+        for(i = 0; i < (ARRAY_COUNT(this->demoBeamSize)); i++) {
+            b = &D_80A07954;
+            g = &D_80A07952;
+            r = &D_80A07950;
+            gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, *r, *g, *b, 40);
+            temp_fs0 = (func_809F49C0() * 40.0f) - 30.0f;
+            Matrix_Translate(this->shapePos[2].x, (this->shapePos[2].y - 30.0f) + 50.0f + temp_fs0 + 25.0f, this->shapePos[2].z, MTXMODE_NEW);
+            Matrix_Translate(arg2->x, arg2->y + temp_fs0, arg2->z, MTXMODE_NEW);
+            Matrix_RotateYF(2.0f * (func_809F49C0() * M_PI), MTXMODE_APPLY);
+            Matrix_RotateXFApply(-0.024999999f * temp_fs0);
+            Matrix_RotateZF(2.0f * (func_809F49C0() * M_PI), MTXMODE_APPLY);
+            if (this->demoBeamSize[i] > 0.0f) {
+                Matrix_Scale(this->demoBeamSize[i], 1.0f, 12.0f, MTXMODE_APPLY);
+                gSPMatrix(POLY_XLU_DISP++, Matrix_NewMtx(__gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
+                gSPDisplayList(POLY_XLU_DISP++, &D_0602EFE8);
+            }
+        }
+        func_8012C2DC(play->state.gfxCtx);
+        gSPDisplayList(POLY_XLU_DISP++, &D_04023348);
+        gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, 255, 255, (u8)(sREG(18) + 220), (u8)(sREG(16) + 170));
+        gDPSetEnvColor(POLY_XLU_DISP++, 255, 255, (u8)(sREG(22) + 100), 128);
+        Matrix_Translate(this->shapePos[2].x, this->shapePos[2].y, this->shapePos[2].z, MTXMODE_NEW);
+        Matrix_ReplaceRotation(&play->billboardMtxF);
+        Matrix_RotateZS(play->gameplayFrames << 7, MTXMODE_APPLY);
+        temp_fa0_2 = (f32) (sREG(17) + 800) * 0.01f * this->demoBeamSize0;
+        Matrix_Scale(temp_fa0_2, temp_fa0_2, 1.0f, MTXMODE_APPLY);
+        gSPMatrix(POLY_XLU_DISP++, Matrix_NewMtx(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
+        gSPDisplayList(POLY_XLU_DISP++, &D_04023428);
+    }
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809FBF94.s")
 

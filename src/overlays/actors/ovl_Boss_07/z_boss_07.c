@@ -16,8 +16,8 @@ void Boss07_Destroy(Actor* thisx, PlayState* play);
 void Boss07_Update(Actor* thisx, PlayState* play);
 void Boss07_Draw(Actor* thisx, PlayState* play);
 
-void func_809F49A0(s32 arg0, s32 arg1, s32 arg2);
-f32 func_809F49C0(void);
+void Boss07_SeedRand(s32 arg0, s32 arg1, s32 arg2);
+f32 Boss07_RandZeroOne(void);
 void func_809F4CBC(Boss07 * this, f32 maxStep);   
 void func_809F4D10(Vec3f* arg0, f32 arg1);
 void func_809F5E88(Boss07* this, PlayState* play);
@@ -540,21 +540,30 @@ extern UNK_TYPE D_06040930;
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F4980.s")
 
-// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F49A0.s")
-void func_809F49A0(s32 arg0, s32 arg1, s32 arg2) {
-    D_80A0A888 = arg0;
-    D_80A0A88C = arg1;
-    D_80A0A890 = arg2;
+// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/Boss07_SeedRand.s")
+// Set random number seed
+void Boss07_SeedRand(s32 seed0, s32 seed1, s32 seed2) {
+    D_80A0A888 = seed0;
+    D_80A0A88C = seed1;
+    D_80A0A890 = seed2;
 }
 
-// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F49C0.s")
-f32 func_809F49C0(void) {
-    f32 toReturn;
+// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/Boss07_RandZeroOne.s")
+// Generates a random number between 0 and 1
+f32 Boss07_RandZeroOne(void) {
+    f32 rand;
+
+    // Wichmann-Hill algorithm
     D_80A0A888 = (D_80A0A888 * 171) % 30269;
     D_80A0A88C = (D_80A0A88C * 172) % 30307;
     D_80A0A890 = (D_80A0A890 * 170) % 30323;
-    for(toReturn = ((f32) D_80A0A888 / 30269.0f) + ((f32) D_80A0A88C / 30307.0f) + ((f32) D_80A0A890 / 30323.0f); toReturn >= 1.0f; toReturn -= 1.0f);
-    return fabsf(toReturn);
+    rand = (D_80A0A888 / 30269.0f) + ( D_80A0A88C / 30307.0f) + (D_80A0A890 / 30323.0f);
+    
+    while(rand >= 1.0f) {
+        rand -= 1.0f;
+    }
+    
+    return fabsf(rand);
 }
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F4AE8.s")
@@ -1083,7 +1092,7 @@ void func_809FBB9C(Boss07* this, PlayState* play, Vec3f* arg2) {
 
     __gfxCtx = play->state.gfxCtx;
     if (this->demoBeamSize0 > 0.0f) {
-        func_809F49A0(1, 0x71B8, 0x263A);
+        Boss07_SeedRand(1, 0x71B8, 0x263A);
         __gfxCtx->polyXlu.p = Gfx_CallSetupDL(__gfxCtx->polyXlu.p, 20);
         gDPSetCombineMode(POLY_XLU_DISP++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
         for(i = 0; i < (ARRAY_COUNT(this->demoBeamSize)); i++) {
@@ -1091,12 +1100,12 @@ void func_809FBB9C(Boss07* this, PlayState* play, Vec3f* arg2) {
             g = &D_80A07952;
             r = &D_80A07950;
             gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, *r, *g, *b, 40);
-            temp_fs0 = (func_809F49C0() * 40.0f) - 30.0f;
+            temp_fs0 = (Boss07_RandZeroOne() * 40.0f) - 30.0f;
             Matrix_Translate(this->shapePos[2].x, (this->shapePos[2].y - 30.0f) + 50.0f + temp_fs0 + 25.0f, this->shapePos[2].z, MTXMODE_NEW);
             Matrix_Translate(arg2->x, arg2->y + temp_fs0, arg2->z, MTXMODE_NEW);
-            Matrix_RotateYF(2.0f * (func_809F49C0() * M_PI), MTXMODE_APPLY);
+            Matrix_RotateYF(2.0f * (Boss07_RandZeroOne() * M_PI), MTXMODE_APPLY);
             Matrix_RotateXFApply(-0.024999999f * temp_fs0);
-            Matrix_RotateZF(2.0f * (func_809F49C0() * M_PI), MTXMODE_APPLY);
+            Matrix_RotateZF(2.0f * (Boss07_RandZeroOne() * M_PI), MTXMODE_APPLY);
             if (this->demoBeamSize[i] > 0.0f) {
                 Matrix_Scale(this->demoBeamSize[i], 1.0f, 12.0f, MTXMODE_APPLY);
                 gSPMatrix(POLY_XLU_DISP++, Matrix_NewMtx(__gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);

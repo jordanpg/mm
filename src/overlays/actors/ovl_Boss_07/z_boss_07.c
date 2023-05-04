@@ -547,7 +547,15 @@ void func_809F49A0(s32 arg0, s32 arg1, s32 arg2) {
     D_80A0A890 = arg2;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F49C0.s")
+// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F49C0.s")
+f32 func_809F49C0(void) {
+    f32 toReturn;
+    D_80A0A888 = (D_80A0A888 * 171) % 30269;
+    D_80A0A88C = (D_80A0A88C * 172) % 30307;
+    D_80A0A890 = (D_80A0A890 * 170) % 30323;
+    for(toReturn = ((f32) D_80A0A888 / 30269.0f) + ((f32) D_80A0A88C / 30307.0f) + ((f32) D_80A0A890 / 30323.0f); toReturn >= 1.0f; toReturn -= 1.0f);
+    return fabsf(toReturn);
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F4AE8.s")
 

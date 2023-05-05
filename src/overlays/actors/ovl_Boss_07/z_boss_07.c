@@ -16,16 +16,16 @@ void Boss07_Destroy(Actor* thisx, PlayState* play);
 void Boss07_Update(Actor* thisx, PlayState* play);
 void Boss07_Draw(Actor* thisx, PlayState* play);
 
-void Boss07_SeedRand(s32 arg0, s32 arg1, s32 arg2);
+void Boss07_SeedRand(s32 seed0, s32 seed1, s32 seed2);
 f32 Boss07_RandZeroOne(void);
 void func_809F4980(Actor* thisx);
 void func_809F4AE8(PlayState* play, Vec3f* vec0, Vec3f* vec1, Vec3f* vec2, f32 arg4);
 s32 func_809F4C40(Boss07* this, PlayState* play);
-void func_809F4CBC(Boss07* this, f32 maxStep);   
+void func_809F4CBC(Boss07* this, f32 maxStep);
 void func_809F4D10(Vec3f* arg0, f32 arg1);
 void func_809F5E88(Boss07* this, PlayState* play);
 void func_809F65F4(Boss07* this, PlayState* play);
-void func_809F7400(Boss07 *this, PlayState *play, s16 arg2);
+void func_809F7400(Boss07* this, PlayState* play, s16 arg2);
 void func_809F748C(Boss07* this, PlayState* play);
 void func_809F76D0(Boss07* this, PlayState* play);
 void func_809F77A8(Boss07* this, PlayState* play);
@@ -40,13 +40,14 @@ void func_809F8B1C(Boss07* this, PlayState* play);
 void func_809F8D04(Boss07* this, PlayState* play);
 void func_809F8EC8(Boss07* this, PlayState* play);
 void func_809F91D4(Boss07* this, PlayState* play);
-void func_809FAA44(Boss07* this, PlayState* play, Vec3f* arg2, Vec3f* arg3, Vec3f* arg4, Vec3f* arg5, f32 arg6, f32 arg7, f32 arg8, f32 arg9, Vec3s* argA, s32 argB, f32 argC, s32 argD);
+void func_809FAA44(Boss07* this, PlayState* play, Vec3f* arg2, Vec3f* arg3, Vec3f* arg4, Vec3f* arg5, f32 arg6,
+                   f32 arg7, f32 arg8, f32 arg9, Vec3s* argA, s32 argB, f32 argC, s32 argD);
 void func_809FB114(Boss07* this, PlayState* play, Vec3f* arg2, Vec3f* arg3, f32 arg4, s32 arg5);
 s32 func_809FB504(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot, Actor* thisx);
 void func_809FB55C(PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* rot, Actor* thisx);
 void func_809FB728(PlayState* play, s32 limbIndex, Actor* thisx);
 void func_809FB7D4(Boss07* this, PlayState* play);
-void func_809FBB9C(Boss07* this, PlayState* play, Vec3f* vec);
+void func_809FBB9C(Boss07* this, PlayState* play, Vec3f* arg2);
 void func_809FC8B0(void* ptr, Boss07* this, PlayState* play);
 void func_809FC960(void* ptr, Boss07* this, PlayState* play);
 void func_809FCCCC(Boss07* this, PlayState* play);
@@ -71,7 +72,7 @@ void func_80A04E5C(Boss07* this, PlayState* play);
 void func_80A055E0(Boss07* this, PlayState* play);
 void func_80A05608(Boss07* this, PlayState* play);
 void func_80A05694(Boss07* this, PlayState* play);
-void func_80A057A0(Actor* thisx, PlayState *play);
+void func_80A057A0(Actor* thisx, PlayState* play);
 void func_80A05B50(Boss07* this, PlayState* play);
 void func_80A05DDC(Boss07* this, PlayState* play);
 
@@ -479,10 +480,10 @@ extern Vec3f D_80A084D8;
 extern Vec3f D_80A09A40;
 extern s8 D_80A09A4C;
 extern s32 D_80A09A50;
-extern Boss07 *D_80A09A54;
-extern Boss07 *D_80A09A58;
-extern Boss07 *D_80A09A5C;
-extern Boss07 *D_80A09A60[4];
+extern Boss07* D_80A09A54;
+extern Boss07* D_80A09A58;
+extern Boss07* D_80A09A5C;
+extern Boss07* D_80A09A60[4];
 extern s8 D_80A09A70;
 extern s8 D_80A09A71;
 extern UNK_TYPE D_80A09A78;
@@ -570,12 +571,12 @@ f32 Boss07_RandZeroOne(void) {
     D_80A0A888 = (D_80A0A888 * 171) % 30269;
     D_80A0A88C = (D_80A0A88C * 172) % 30307;
     D_80A0A890 = (D_80A0A890 * 170) % 30323;
-    rand = (D_80A0A888 / 30269.0f) + ( D_80A0A88C / 30307.0f) + (D_80A0A890 / 30323.0f);
-    
-    while(rand >= 1.0f) {
+    rand = (D_80A0A888 / 30269.0f) + (D_80A0A88C / 30307.0f) + (D_80A0A890 / 30323.0f);
+
+    while (rand >= 1.0f) {
         rand -= 1.0f;
     }
-    
+
     return fabsf(rand);
 }
 
@@ -618,8 +619,8 @@ void func_809F4D10(Vec3f* arg0, f32 arg1) {
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/Boss07_Init.s")
 
 // #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/Boss07_Destroy.s")
-void Boss07_Destroy(Actor *thisx, PlayState *play) {
-    Boss07 *this = THIS;
+void Boss07_Destroy(Actor* thisx, PlayState* play) {
+    Boss07* this = THIS;
 
     switch (this->actor.params) {
         case 0x1E:
@@ -632,7 +633,7 @@ void Boss07_Destroy(Actor *thisx, PlayState *play) {
 }
 
 // #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F5E14.s")
-void func_809F5E14(Boss07 *this, PlayState *play) {
+void func_809F5E14(Boss07* this, PlayState* play) {
     this->actionFunc = func_809F5E88;
     Animation_MorphToLoop(&this->skelAnime, &D_06023DAC, 0.0f);
     this->actor.flags &= ~1;
@@ -642,11 +643,11 @@ void func_809F5E14(Boss07 *this, PlayState *play) {
 }
 
 // #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F5E88.s")
-void func_809F5E88(Boss07 *this, PlayState *play) {
+void func_809F5E88(Boss07* this, PlayState* play) {
     Player* player;
     u32 i;
     u32 index;
-    Camera *camera;
+    Camera* camera;
 
     this->damage = 0x14;
     SkelAnime_Update(&this->skelAnime);
@@ -654,14 +655,14 @@ void func_809F5E88(Boss07 *this, PlayState *play) {
     Matrix_Translate(this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, MTXMODE_NEW);
     Matrix_RotateYS(this->actor.shape.rot.y, MTXMODE_APPLY);
 
-    switch(this->demoMode) {
+    switch (this->demoMode) {
         case 0:
             this->demoTime = 0;
             this->demoMode = 1;
             this->wayTarget.z = 0.0f;
             this->eyeTarget.x = 0.0f;
-            this->eyeTarget.y = (((f32) KREG(17) + 100.0f) - 30.0f) + 80.0f;
-            this->eyeTarget.z = ((((f32) KREG(18) + 270.0f) - 150.0f) + 30.0f) - 50.0f;
+            this->eyeTarget.y = (((f32)KREG(17) + 100.0f) - 30.0f) + 80.0f;
+            this->eyeTarget.z = ((((f32)KREG(18) + 270.0f) - 150.0f) + 30.0f) - 50.0f;
             this->wayTarget.x = 0.0f;
             this->wayTarget.y = 180.0f;
         case 1:
@@ -673,8 +674,8 @@ void func_809F5E88(Boss07 *this, PlayState *play) {
                     Actor_PlaySfx(&this->actor, NA_SE_EN_LAST2_GROW_HEAD_OLD);
                 }
                 Math_ApproachS(&this->headAngle.x, 0, 5, 0x1000);
-                this->headAngle.y = (s16) (Math_SinS((this->demoTime << 0xC)) * this->hensinScaleS1);
-                this->headAngle.z = (s16) (Math_SinS((this->demoTime * 0xB00)) * this->hensinScaleS1 * 0.5f);
+                this->headAngle.y = (s16)(Math_SinS((this->demoTime << 0xC)) * this->hensinScaleS1);
+                this->headAngle.z = (s16)(Math_SinS((this->demoTime * 0xB00)) * this->hensinScaleS1 * 0.5f);
                 if (this->demoTime >= 0x29U) {
                     Math_ApproachZeroF(&this->hensinScaleS1, 1.0f, 200.0f);
                 }
@@ -696,8 +697,8 @@ void func_809F5E88(Boss07 *this, PlayState *play) {
                 Math_ApproachF(&this->wayTarget.y, D_80A07F6C[index].z, 0.075f, this->cameraMorf * 7.0f);
                 Math_ApproachF(&this->cameraMorf, 1.0f, 1.0f, 0.01f);
                 if (this->demoTime == 0x46) {
-                    Animation_MorphToPlayOnce(&this->skelAnime, (AnimationHeader *) &D_06025018, -15.0f);
-                    this->endFrame = (f32) Animation_GetLastFrame(&D_06025018);
+                    Animation_MorphToPlayOnce(&this->skelAnime, (AnimationHeader*)&D_06025018, -15.0f);
+                    this->endFrame = (f32)Animation_GetLastFrame(&D_06025018);
                     func_8019FE1C(&this->actor.projectedPos, 0x290D, 0x3F800000);
                     Actor_PlaySfx(&this->actor, NA_SE_EN_LAST2_SHOUT);
                 }
@@ -720,7 +721,8 @@ void func_809F5E88(Boss07 *this, PlayState *play) {
                     AudioSeq_QueueSeqCmd(0x8069U);
                 }
                 if (this->demoTime == 0x89) {
-                    TitleCard_InitBossName(&play->state, &play->actorCtx.titleCtxt, Lib_SegmentedToVirtual(&D_06032040), 0xA0, 0xB4, 0x80, 0x28);
+                    TitleCard_InitBossName(&play->state, &play->actorCtx.titleCtxt, Lib_SegmentedToVirtual(&D_06032040),
+                                           0xA0, 0xB4, 0x80, 0x28);
                 }
                 if (Animation_OnFrame(&this->skelAnime, this->endFrame) != 0) {
                     camera = Play_GetCamera(play, 0);
@@ -736,8 +738,8 @@ void func_809F5E88(Boss07 *this, PlayState *play) {
                     this->actor.flags |= 1;
                     Play_DisableMotionBlur();
                     if (D_80A09A60[0] != NULL) {
-                        for(i = 0; i < ARRAY_COUNT(D_80A09A60); i++) {
-                            func_800BC154(play, &play->actorCtx, (Actor *)D_80A09A60[i], 9);
+                        for (i = 0; i < ARRAY_COUNT(D_80A09A60); i++) {
+                            func_800BC154(play, &play->actorCtx, (Actor*)D_80A09A60[i], 9);
                         }
                     }
                 }
@@ -759,13 +761,13 @@ void func_809F5E88(Boss07 *this, PlayState *play) {
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F65F4.s")
 
 // #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F7400.s")
-void func_809F7400(Boss07 *this, PlayState *play, s16 arg2) {
+void func_809F7400(Boss07* this, PlayState* play, s16 arg2) {
     this->actionFunc = func_809F748C;
     Animation_MorphToLoop(&this->skelAnime, &D_0603CBD0, -10.0f);
     if (arg2 != 0) {
         this->timer[0] = arg2;
     } else {
-        this->timer[0] = (s16) Rand_ZeroFloat(30.0f);
+        this->timer[0] = (s16)Rand_ZeroFloat(30.0f);
     }
     this->actor.flags |= 1;
 }
@@ -802,8 +804,8 @@ void func_809F7D2C(Boss07* this, PlayState* play) {
                 this->moveMode = 4;
             }
         } else {
-            this->moveMode = (u32) Rand_ZeroFloat(6.99f);
-            if (((s8) this->actor.colChkInfo.health >= 0x1C) && ((this->moveMode == 1) || (this->moveMode == 2))) {
+            this->moveMode = (u32)Rand_ZeroFloat(6.99f);
+            if (((s8)this->actor.colChkInfo.health >= 0x1C) && ((this->moveMode == 1) || (this->moveMode == 2))) {
                 this->moveMode = 0;
             }
         }
@@ -848,7 +850,7 @@ void func_809F7D2C(Boss07* this, PlayState* play) {
 }
 
 // #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F805C.s")
-void func_809F805C(Boss07 *this, PlayState *play) {
+void func_809F805C(Boss07* this, PlayState* play) {
     SkelAnime_Update(&this->skelAnime);
     func_809F4CBC(this, 2.0f);
     this->kanseiPower = 0.79999995f;
@@ -864,7 +866,7 @@ void func_809F805C(Boss07 *this, PlayState *play) {
     }
     switch (this->moveMode) {
         case 0:
-            if (this->count == (s16) (KREG(92) + 1)) {
+            if (this->count == (s16)(KREG(92) + 1)) {
                 Audio_PlaySfxAtPos(&D_80A09A40, NA_SE_EN_LAST3_VOICE_ROD_OLD);
             }
             if ((this->count >= 0xF) && (this->count < 0x12)) {
@@ -881,7 +883,7 @@ void func_809F805C(Boss07 *this, PlayState *play) {
             }
             break;
         case 1:
-            if (this->count == (s16) (KREG(91) + 3)) {
+            if (this->count == (s16)(KREG(91) + 3)) {
                 Audio_PlaySfxAtPos(&D_80A09A40, NA_SE_EN_LAST3_VOICE_THROW_OLD);
             }
             if ((this->count >= 8) && (this->count < 0x38)) {
@@ -897,7 +899,7 @@ void func_809F805C(Boss07 *this, PlayState *play) {
             }
             break;
         case 2:
-            if (this->count == (s16) (KREG(84) + 5)) {
+            if (this->count == (s16)(KREG(84) + 5)) {
                 Audio_PlaySfxAtPos(&D_80A09A40, NA_SE_EN_LAST3_VOICE_ROD_OLD);
             }
             if ((this->count >= 0x20) && (this->count < 0x27)) {
@@ -915,7 +917,7 @@ void func_809F805C(Boss07 *this, PlayState *play) {
             }
             break;
         case 3:
-            if (this->count == (s16) (KREG(84) + 5)) {
+            if (this->count == (s16)(KREG(84) + 5)) {
                 Audio_PlaySfxAtPos(&D_80A09A40, NA_SE_EN_LAST3_VOICE_ROD_OLD);
             }
             if ((this->count >= 0x1F) && (this->count < 0x24)) {
@@ -963,7 +965,7 @@ void func_809F805C(Boss07 *this, PlayState *play) {
             this->defenseOk = 1;
             break;
         case 6:
-            if (this->count == (s16) (KREG(85) + 5)) {
+            if (this->count == (s16)(KREG(85) + 5)) {
                 Audio_PlaySfxAtPos(&D_80A09A40, NA_SE_EN_LAST3_VOICE_ROD_OLD);
             }
             if ((this->count >= 0xE) && (this->count < 0x13)) {
@@ -1017,40 +1019,42 @@ void func_809F8EC8(Boss07* this, PlayState* play) {
     s16 var_a1;
 
     this->hitOk = 0x14;
-    if (this->count < (s16) (KREG(40) + 0xE)) {
+    if (this->count < (s16)(KREG(40) + 0xE)) {
         this->mutiKoma += 6;
         if (this->mutiKoma >= 0x2D) {
             this->mutiKoma = 0x2C;
         }
     }
 
-    if(this->count == 0) {
+    if (this->count == 0) {
         // Do nothing...
     }
-    
+
     if (this->count == 8) {
-        Actor_Spawn(&play->actorCtx, play, 0x12F, this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 0xB4);
+        Actor_Spawn(&play->actorCtx, play, 0x12F, this->actor.world.pos.x, this->actor.world.pos.y,
+                    this->actor.world.pos.z, 0, 0, 0, 0xB4);
     }
     if (this->count == 0xA) {
         Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_ROD_WIND_OLD);
     }
-    if (this->count == (s16) (KREG(40) + 0x12)) {
+    if (this->count == (s16)(KREG(40) + 0x12)) {
         Actor_PlaySfx(&this->actor, NA_SE_EN_LAST3_VOICE_KOMA_OLD);
     }
     var_a1 = (KREG(40) + 0xE);
-    if ((this->count < var_a1) || ((s16) (KREG(41) + 0x11) < this->count)) {
+    if ((this->count < var_a1) || ((s16)(KREG(41) + 0x11) < this->count)) {
         SkelAnime_Update(&this->skelAnime);
         var_a1 = KREG(40) + 0xE;
     }
-    if ((this->count >= var_a1) && (((s16) (KREG(41) + 0x11) >= this->count) || (this->count >= (s16) (KREG(42) + 0x15)))) {
+    if ((this->count >= var_a1) &&
+        (((s16)(KREG(41) + 0x11) >= this->count) || (this->count >= (s16)(KREG(42) + 0x15)))) {
         this->mutiKoma -= KREG(39) + 5;
         if (this->mutiKoma < 0) {
             this->mutiKoma = 0;
         }
     }
-    Math_ApproachS(&this->actor.shape.rot.y, (s16) ((KREG(8) << 8) + this->actor.yawTowardsPlayer + 0xF00), 3, 0x2000);
+    Math_ApproachS(&this->actor.shape.rot.y, (s16)((KREG(8) << 8) + this->actor.yawTowardsPlayer + 0xF00), 3, 0x2000);
     func_809F4CBC(this, 2.0f);
-    
+
     this->kanseiPower = 0.79999995f;
     this->kanseiPower2 = 0.79999995f;
     this->kanseiBrake = 1.0f;
@@ -1059,10 +1063,10 @@ void func_809F8EC8(Boss07* this, PlayState* play) {
     this->hari = 0.0f;
     this->hari2 = 0.0f;
     this->mutiG2 = -15.0f;
-    if ((this->count >= (s16) (KREG(43) + 0xC)) && ((s16) (KREG(44) + 0x11) >= this->count)) {
-        this->hari = (f32) KREG(6) + 500.0f;
+    if ((this->count >= (s16)(KREG(43) + 0xC)) && ((s16)(KREG(44) + 0x11) >= this->count)) {
+        this->hari = (f32)KREG(6) + 500.0f;
     }
-    if (this->count >= (s16) (KREG(45) + 0x24)) {
+    if (this->count >= (s16)(KREG(45) + 0x24)) {
         func_809F7400(this, play, Rand_ZeroFloat(20.0f) + 20.0f);
     }
 }
@@ -1108,13 +1112,14 @@ void func_809FBB9C(Boss07* this, PlayState* play, Vec3f* arg2) {
         Boss07_SeedRand(1, 0x71B8, 0x263A);
         __gfxCtx->polyXlu.p = Gfx_CallSetupDL(__gfxCtx->polyXlu.p, 20);
         gDPSetCombineMode(POLY_XLU_DISP++, G_CC_PRIMITIVE, G_CC_PRIMITIVE);
-        for(i = 0; i < (ARRAY_COUNT(this->demoBeamSize)); i++) {
+        for (i = 0; i < (ARRAY_COUNT(this->demoBeamSize)); i++) {
             b = &D_80A07954;
             g = &D_80A07952;
             r = &D_80A07950;
             gDPSetPrimColor(POLY_XLU_DISP++, 0, 0, *r, *g, *b, 40);
             temp_fs0 = (Boss07_RandZeroOne() * 40.0f) - 30.0f;
-            Matrix_Translate(this->shapePos[2].x, (this->shapePos[2].y - 30.0f) + 50.0f + temp_fs0 + 25.0f, this->shapePos[2].z, MTXMODE_NEW);
+            Matrix_Translate(this->shapePos[2].x, (this->shapePos[2].y - 30.0f) + 50.0f + temp_fs0 + 25.0f,
+                             this->shapePos[2].z, MTXMODE_NEW);
             Matrix_Translate(arg2->x, arg2->y + temp_fs0, arg2->z, MTXMODE_NEW);
             Matrix_RotateYF(2.0f * (Boss07_RandZeroOne() * M_PI), MTXMODE_APPLY);
             Matrix_RotateXFApply(-0.024999999f * temp_fs0);
@@ -1132,7 +1137,7 @@ void func_809FBB9C(Boss07* this, PlayState* play, Vec3f* arg2) {
         Matrix_Translate(this->shapePos[2].x, this->shapePos[2].y, this->shapePos[2].z, MTXMODE_NEW);
         Matrix_ReplaceRotation(&play->billboardMtxF);
         Matrix_RotateZS(play->gameplayFrames << 7, MTXMODE_APPLY);
-        temp_fa0_2 = (f32) (sREG(17) + 800) * 0.01f * this->demoBeamSize0;
+        temp_fa0_2 = (f32)(sREG(17) + 800) * 0.01f * this->demoBeamSize0;
         Matrix_Scale(temp_fa0_2, temp_fa0_2, 1.0f, MTXMODE_APPLY);
         gSPMatrix(POLY_XLU_DISP++, Matrix_NewMtx(play->state.gfxCtx), G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
         gSPDisplayList(POLY_XLU_DISP++, &D_04023428);
@@ -1146,7 +1151,7 @@ void Boss07_Draw(Actor* thisx, PlayState* play) {
     char pad[6];
     void* graph;
     GraphicsContext* __gfxCtx;
-    Boss07* this = (Boss07* ) thisx;
+    Boss07* this = (Boss07*)thisx;
     Vec3f newPos;
 
     graph = GRAPH_ALLOC(play->state.gfxCtx, 0x1000);
@@ -1158,11 +1163,16 @@ void Boss07_Draw(Actor* thisx, PlayState* play) {
     }
     Matrix_RotateYF(this->hoseiYa, MTXMODE_APPLY);
     Matrix_RotateXFApply(this->hoseiXa);
-    SkelAnime_DrawTransformFlexOpa(play, this->skelAnime.skeleton, this->skelAnime.jointTable, this->skelAnime.dListCount, func_809FB504, func_809FB55C, func_809FB728, &this->actor);
+    SkelAnime_DrawTransformFlexOpa(play, this->skelAnime.skeleton, this->skelAnime.jointTable,
+                                   this->skelAnime.dListCount, func_809FB504, func_809FB55C, func_809FB728,
+                                   &this->actor);
     __gfxCtx->polyOpa.p = Play_SetFog(play, __gfxCtx->polyOpa.p);
     if (((KREG(63) == 0) || (KREG(63) == 2)) && (this->moveFlag != 0)) {
-        func_809FAA44(this, play, &this->mutiBasePos, this->mutiPos, this->mutiAngle, this->mutiSpd, this->mutiG, this->kanseiPower, this->kanseiBrake, this->hari, &this->handA, this->maki, this->mutiBaseScale, 0);
-        func_809FAA44(this, play, &this->mutiBasePos2, this->mutiPos2, this->mutiAngle2, this->mutiSpd2, this->mutiG2, this->kanseiPower2, this->kanseiBrake2, this->hari2, &this->handA2, 0, this->mutiBaseScale, 1);
+        func_809FAA44(this, play, &this->mutiBasePos, this->mutiPos, this->mutiAngle, this->mutiSpd, this->mutiG,
+                      this->kanseiPower, this->kanseiBrake, this->hari, &this->handA, this->maki, this->mutiBaseScale,
+                      0);
+        func_809FAA44(this, play, &this->mutiBasePos2, this->mutiPos2, this->mutiAngle2, this->mutiSpd2, this->mutiG2,
+                      this->kanseiPower2, this->kanseiBrake2, this->hari2, &this->handA2, 0, this->mutiBaseScale, 1);
     }
 
     func_809FB114(this, play, this->mutiPos, this->mutiAngle, this->mutiBaseScale, 0);
@@ -1176,7 +1186,8 @@ void Boss07_Draw(Actor* thisx, PlayState* play) {
     newPos.y = (this->shapePos[2].y - 30.0f) + 50.0f;
     newPos.z = this->shapePos[2].z;
     func_809FBB9C(this, play, &newPos);
-    Actor_DrawDamageEffects(play, &this->actor, this->shapePos, 0xF, this->effScale1, this->effScale2, this->effAlpha, this->effNo);
+    Actor_DrawDamageEffects(play, &this->actor, this->shapePos, 0xF, this->effScale1, this->effScale2, this->effAlpha,
+                            this->effNo);
     this->moveFlag = 0;
 }
 
@@ -1296,7 +1307,7 @@ void Boss07_Draw(Actor* thisx, PlayState* play) {
 /** Remains damage function? */
 void func_80A04768(Boss07* this, PlayState* play) {
     Vec3f vec;
-    ColliderInfo *acHitInfo;
+    ColliderInfo* acHitInfo;
     s16 damage;
 
     if ((this->damage == 0) && (this->cylInfo.base.acFlags & 2)) {
@@ -1307,12 +1318,12 @@ void func_80A04768(Boss07* this, PlayState* play) {
             func_80A055E0(this, play);
             return;
         }
-        
+
         damage = this->actor.colChkInfo.damage;
         this->actor.colChkInfo.health -= damage;
         this->damageFlash = 15;
         this->actionFunc = func_80A04E5C;
-        if ((s8) this->actor.colChkInfo.health <= 0) {
+        if ((s8)this->actor.colChkInfo.health <= 0) {
             this->moveMode = 2;
             this->fireMode = 1;
             Enemy_StartFinishingBlow(play, &this->actor);
@@ -1349,113 +1360,113 @@ void func_80A04E5C(Boss07* this, PlayState* play) {
     Vec3f sp48;
 
     switch (this->moveMode) {
-    case 0:
-    case 3:
-    case 4:
-    case 5:
-    case 6:
-    case 7:
-    case 8:
-    case 9:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
-    case 16:
-    case 17:
-    case 18:
-    case 19:
-        break;
-    case 20:
-        Actor_PlaySfx(&this->actor, NA_SE_EV_MUJURA_FOLLOWERS_FLY - SFX_FLAG);
-        this->timer[0] = 80;
-        temp_ft1 = Rand_ZeroFloat(100.0f) + 100.0f;
-        this->baseSpeed = 5.0f;
-        this->actor.speed = 5.0f;
-        this->timer[2] = temp_ft1;
-        this->target = gZeroVec3f;
-        this->actor.world.rot.y = Math_Atan2S(-this->actor.world.pos.x, -this->actor.world.pos.z);
-        this->moveMode = 1;
-        this->bgCheckOk = 100;
-        this->cylInfo.base.colType = COLTYPE_HIT3;
-        this->actor.flags |= ACTOR_FLAG_200 | ACTOR_FLAG_1;
-        Actor_PlaySfx(&this->actor, NA_SE_EN_LAST1_DEMO_BREAK);
-        break;
-    case 1:
-        Actor_PlaySfx(&this->actor, NA_SE_EV_MUJURA_FOLLOWERS_FLY - SFX_FLAG);
-        if (this->timer[2] == 0) {
-            this->beamOn = 1;
-            this->timer[2] = Rand_ZeroFloat(200.0f) + 100.0f;
-        }
-        if (this->timer[0] == 0) {
-            if (Rand_ZeroOne() < 0.35f) {
-                this->baseSpeed = 1.0f;
-                this->timer[0] = Rand_ZeroFloat(50.0f) + 30.0f;
-            } else {
-                func_809F4D10(&this->target, 500.0f);
-                this->target.y = Rand_ZeroFloat(350.0f) + 100.0f;
-                this->timer[0] = Rand_ZeroFloat(50.0f) + 20.0f;
-                this->targetSp = 0.0f;
-                this->baseSpeed = Rand_ZeroFloat(5.0f) + 5.0f;
-            }
-        }
-        temp_fa0 = this->target.x - this->actor.world.pos.x;
-        sp74 = this->target.y - this->actor.world.pos.y;
-        temp_fa1 = this->target.z - this->actor.world.pos.z;
-        sp7C = Math_Atan2S(temp_fa0, temp_fa1);
-        sp7E = Math_Atan2S(sp74, sqrtf((temp_fa0 * temp_fa0) + (temp_fa1 * temp_fa1)));
-        sp7E += (s16) (Math_SinS(this->count * 5000) * 4000.0f);
-        Math_ApproachS(&this->actor.world.rot.y, sp7C, 10, this->targetSp);
-        Math_ApproachS(&this->actor.world.rot.x, sp7E, 5, this->targetSp);
-        Math_ApproachF(&this->targetSp, 2000.0f, 1.0f, 100.0f);
-        Math_ApproachF(&this->actor.speed, this->baseSpeed, 1.0f, 1.0f);
-        if ((this->baseSpeed < 8.0f) && (Play_InCsMode(play) == 0)) {
-            Math_ApproachS(&this->actor.shape.rot.y, this->actor.yawTowardsPlayer, 10, 4096);
-        } else {
-            Math_ApproachS(&this->actor.shape.rot.y, this->actor.world.rot.y, 10, 4096);
-        }
-        Actor_UpdateVelocityWithoutGravity(&this->actor);
-        Actor_UpdatePos(&this->actor);
-        if (this->bgCheckOk == 0) {
-            Actor_UpdateBgCheckInfo(play, &this->actor, 50.0f, 100.0f, 100.0f, 5);
-        } else {
-            this->bgCheckOk--;
-        }
-        func_80A04768(this, play);
-        break;
-    case 2:
-        Math_ApproachS(&this->actor.shape.rot.x, -16384, 1, 1280);
-        Actor_MoveWithGravity(&this->actor);
-        Actor_UpdateBgCheckInfo(play, &this->actor, 50.0f, 100.0f, 100.0f, 5);
-        if (this->actor.bgCheckFlags & 1) {
-            if (this->fireMode != 0) {
-                this->fireTime |= 4;
-            }
-            Math_ApproachF(&this->actor.scale.z, 0.0f, 1.0f, 0.001f);
-            if (this->actor.scale.z == 0.0f) {
-                this->moveMode = 3;
-                this->actor.draw = NULL;
-                this->actor.flags &= ~ACTOR_FLAG_1;
-            }
-            func_809F4CBC(this, 2.0f);
-        } else {
-            this->actor.shape.rot.z += 512;
-        }
-        break;
-    case 10:
-        Actor_MoveWithGravity(&this->actor);
-        this->actor.world.pos.y -= 50.0f;
-        this->actor.prevPos.y -= 50.0f;
-        Actor_UpdateBgCheckInfo(play, &this->actor, 35.0f, 60.0f, 60.0f, 5);
-        this->actor.world.pos.y += 50.0f;
-        this->actor.prevPos.y += 50.0f;
-        if (this->timer[0] == 0) {
+        case 0:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+        case 15:
+        case 16:
+        case 17:
+        case 18:
+        case 19:
+            break;
+        case 20:
+            Actor_PlaySfx(&this->actor, NA_SE_EV_MUJURA_FOLLOWERS_FLY - SFX_FLAG);
+            this->timer[0] = 80;
+            temp_ft1 = Rand_ZeroFloat(100.0f) + 100.0f;
+            this->baseSpeed = 5.0f;
+            this->actor.speed = 5.0f;
+            this->timer[2] = temp_ft1;
+            this->target = gZeroVec3f;
+            this->actor.world.rot.y = Math_Atan2S(-this->actor.world.pos.x, -this->actor.world.pos.z);
             this->moveMode = 1;
-        }
-        break;
+            this->bgCheckOk = 100;
+            this->cylInfo.base.colType = COLTYPE_HIT3;
+            this->actor.flags |= ACTOR_FLAG_200 | ACTOR_FLAG_1;
+            Actor_PlaySfx(&this->actor, NA_SE_EN_LAST1_DEMO_BREAK);
+            break;
+        case 1:
+            Actor_PlaySfx(&this->actor, NA_SE_EV_MUJURA_FOLLOWERS_FLY - SFX_FLAG);
+            if (this->timer[2] == 0) {
+                this->beamOn = 1;
+                this->timer[2] = Rand_ZeroFloat(200.0f) + 100.0f;
+            }
+            if (this->timer[0] == 0) {
+                if (Rand_ZeroOne() < 0.35f) {
+                    this->baseSpeed = 1.0f;
+                    this->timer[0] = Rand_ZeroFloat(50.0f) + 30.0f;
+                } else {
+                    func_809F4D10(&this->target, 500.0f);
+                    this->target.y = Rand_ZeroFloat(350.0f) + 100.0f;
+                    this->timer[0] = Rand_ZeroFloat(50.0f) + 20.0f;
+                    this->targetSp = 0.0f;
+                    this->baseSpeed = Rand_ZeroFloat(5.0f) + 5.0f;
+                }
+            }
+            temp_fa0 = this->target.x - this->actor.world.pos.x;
+            sp74 = this->target.y - this->actor.world.pos.y;
+            temp_fa1 = this->target.z - this->actor.world.pos.z;
+            sp7C = Math_Atan2S(temp_fa0, temp_fa1);
+            sp7E = Math_Atan2S(sp74, sqrtf((temp_fa0 * temp_fa0) + (temp_fa1 * temp_fa1)));
+            sp7E += (s16)(Math_SinS(this->count * 5000) * 4000.0f);
+            Math_ApproachS(&this->actor.world.rot.y, sp7C, 10, this->targetSp);
+            Math_ApproachS(&this->actor.world.rot.x, sp7E, 5, this->targetSp);
+            Math_ApproachF(&this->targetSp, 2000.0f, 1.0f, 100.0f);
+            Math_ApproachF(&this->actor.speed, this->baseSpeed, 1.0f, 1.0f);
+            if ((this->baseSpeed < 8.0f) && (Play_InCsMode(play) == 0)) {
+                Math_ApproachS(&this->actor.shape.rot.y, this->actor.yawTowardsPlayer, 10, 4096);
+            } else {
+                Math_ApproachS(&this->actor.shape.rot.y, this->actor.world.rot.y, 10, 4096);
+            }
+            Actor_UpdateVelocityWithoutGravity(&this->actor);
+            Actor_UpdatePos(&this->actor);
+            if (this->bgCheckOk == 0) {
+                Actor_UpdateBgCheckInfo(play, &this->actor, 50.0f, 100.0f, 100.0f, 5);
+            } else {
+                this->bgCheckOk--;
+            }
+            func_80A04768(this, play);
+            break;
+        case 2:
+            Math_ApproachS(&this->actor.shape.rot.x, -16384, 1, 1280);
+            Actor_MoveWithGravity(&this->actor);
+            Actor_UpdateBgCheckInfo(play, &this->actor, 50.0f, 100.0f, 100.0f, 5);
+            if (this->actor.bgCheckFlags & 1) {
+                if (this->fireMode != 0) {
+                    this->fireTime |= 4;
+                }
+                Math_ApproachF(&this->actor.scale.z, 0.0f, 1.0f, 0.001f);
+                if (this->actor.scale.z == 0.0f) {
+                    this->moveMode = 3;
+                    this->actor.draw = NULL;
+                    this->actor.flags &= ~ACTOR_FLAG_1;
+                }
+                func_809F4CBC(this, 2.0f);
+            } else {
+                this->actor.shape.rot.z += 512;
+            }
+            break;
+        case 10:
+            Actor_MoveWithGravity(&this->actor);
+            this->actor.world.pos.y -= 50.0f;
+            this->actor.prevPos.y -= 50.0f;
+            Actor_UpdateBgCheckInfo(play, &this->actor, 35.0f, 60.0f, 60.0f, 5);
+            this->actor.world.pos.y += 50.0f;
+            this->actor.prevPos.y += 50.0f;
+            if (this->timer[0] == 0) {
+                this->moveMode = 1;
+            }
+            break;
     }
-    if ((s32) this->moveMode < 2) {
+    if ((s32)this->moveMode < 2) {
         Collider_UpdateCylinder(&this->actor, &this->cylInfo);
         CollisionCheck_SetAC(play, &play->colChkCtx, &this->cylInfo.base);
         CollisionCheck_SetAT(play, &play->colChkCtx, &this->cylInfo.base);
@@ -1463,7 +1474,8 @@ void func_80A04E5C(Boss07* this, PlayState* play) {
     if (this->beamOn != 0) {
         this->beamOn = 0;
         if ((func_809F4C40(this, play) != 0) && (D_80A09A5C->actionFunc != func_80A00720)) {
-            Actor_Spawn(&play->actorCtx, play, ACTOR_BOSS_07, this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 0x64);
+            Actor_Spawn(&play->actorCtx, play, ACTOR_BOSS_07, this->actor.world.pos.x, this->actor.world.pos.y,
+                        this->actor.world.pos.z, 0, 0, 0, 0x64);
         }
     }
     if (this->fireTime != 0) {
@@ -1518,8 +1530,8 @@ void func_80A05694(Boss07* this, PlayState* play) {
     u32 i;
 
     this->count++;
-    for(i = 0; i < ARRAY_COUNT(this->timer); i++) {
-        if(this->timer[i] != 0) {
+    for (i = 0; i < ARRAY_COUNT(this->timer); i++) {
+        if (this->timer[i] != 0) {
             this->timer[i]--;
         }
     }

@@ -1334,13 +1334,25 @@ void func_80A04768(Boss07* this, PlayState* play) {
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A04E5C.s")
 
 // #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A055E0.s")
+/** Remains (?) hookshot reaction */
 void func_80A055E0(Boss07* this, PlayState* play) {
     this->actionFunc = func_80A05608;
     this->timer[0] = 50;
     this->actor.speed = 0.0f;
 }
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A05608.s")
+// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A05608.s")
+/** Action function after remains (?) are hit with hookshot */
+void func_80A05608(Boss07* this, PlayState* play) {
+    func_80A04768(this, play);
+    Collider_UpdateCylinder(&this->actor, &this->cylInfo);
+    CollisionCheck_SetAC(play, &play->colChkCtx, &this->cylInfo.base);
+    CollisionCheck_SetOC(play, &play->colChkCtx, &this->cylInfo.base);
+    if (this->timer[0] == 0) {
+        this->actionFunc = func_80A04E5C;
+        this->moveMode = 1;
+    }
+}
 
 // #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A05694.s")
 /** Update function when params >= 0xC8 (remains?); handles damage knockback & related timers */

@@ -18,7 +18,8 @@ void Boss07_Draw(Actor* thisx, PlayState* play);
 
 void Boss07_SeedRand(s32 arg0, s32 arg1, s32 arg2);
 f32 Boss07_RandZeroOne(void);
-void func_809F4CBC(Boss07 * this, f32 maxStep);   
+void func_809F4980(Actor* thisx);
+void func_809F4CBC(Boss07* this, f32 maxStep);   
 void func_809F4D10(Vec3f* arg0, f32 arg1);
 void func_809F5E88(Boss07* this, PlayState* play);
 void func_809F65F4(Boss07* this, PlayState* play);
@@ -42,10 +43,10 @@ void func_809FB114(Boss07* this, PlayState* play, Vec3f* arg2, Vec3f* arg3, f32 
 s32 func_809FB504(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot, Actor* thisx);
 void func_809FB55C(PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* rot, Actor* thisx);
 void func_809FB728(PlayState* play, s32 limbIndex, Actor* thisx);
-void func_809FB7D4(Boss07*, PlayState*);
-void func_809FBB9C(Boss07*, PlayState*, Vec3f*);
-void func_809FC8B0(void*, Boss07*, PlayState*);
-void func_809FC960(void*, Boss07*, PlayState*);
+void func_809FB7D4(Boss07* this, PlayState* play);
+void func_809FBB9C(Boss07* this, PlayState* play, Vec3f* vec);
+void func_809FC8B0(void* ptr, Boss07* this, PlayState* play);
+void func_809FC960(void* ptr, Boss07* this, PlayState* play);
 void func_809FCCCC(Boss07* this, PlayState* play);
 void func_809FD710(Boss07* this, PlayState* play);
 void func_809FD89C(Boss07* this, PlayState* play);
@@ -62,8 +63,10 @@ void func_80A00554(Boss07* this, PlayState* play);
 void func_80A00720(Boss07* this, PlayState* play);
 void func_80A01750(Boss07* this, PlayState* play);
 void func_80A0264C(Boss07* this, PlayState* play);
+void func_80A04768(Boss07* this, PlayState* play);
 void func_80A04890(Boss07* this, PlayState* play);
 void func_80A04E5C(Boss07* this, PlayState* play);
+void func_80A055E0(Boss07* this, PlayState* play);
 void func_80A05608(Boss07* this, PlayState* play);
 void func_80A05694(Boss07* this, PlayState* play);
 void func_80A057A0(Actor* thisx, PlayState *play);
@@ -535,7 +538,11 @@ extern UNK_TYPE D_0603D7F0;
 extern UNK_TYPE D_0603DD1C;
 extern UNK_TYPE D_06040930;
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F4980.s")
+// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_809F4980.s")
+/** Play remains damage SFX? */
+void func_809F4980(Actor* thisx) {
+    Actor_PlaySfx(thisx, NA_SE_EN_FOLLOWERS_DAMAGE);
+}
 
 // static s32 sRandSeed0
 extern s32 D_80A0A888;
@@ -1281,7 +1288,42 @@ void Boss07_Draw(Actor* thisx, PlayState* play) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A045A8.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A04768.s")
+// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A04768.s")
+/** Remains damage function? */
+void func_80A04768(Boss07* this, PlayState* play) {
+    Vec3f vec;
+    ColliderInfo *acHitInfo;
+    s16 damage;
+
+    if ((this->damage == 0) && (this->cylInfo.base.acFlags & 2)) {
+        this->cylInfo.base.acFlags &= 0xFFFD;
+        this->damage = 0xF;
+        acHitInfo = this->cylInfo.info.acHitInfo;
+        if (acHitInfo->toucher.dmgFlags & 0x80) {
+            func_80A055E0(this, play);
+            return;
+        }
+        
+        damage = this->actor.colChkInfo.damage;
+        this->actor.colChkInfo.health -= damage;
+        this->damageFlash = 0xF;
+        this->actionFunc = func_80A04E5C;
+        if ((s8) this->actor.colChkInfo.health <= 0) {
+            this->moveMode = 2;
+            this->fireMode = 1;
+            Enemy_StartFinishingBlow(play, &this->actor);
+            Actor_PlaySfx(&this->actor, NA_SE_EN_FOLLOWERS_DEAD);
+        } else {
+            this->moveMode = 0xA;
+            this->timer[0] = 0xF;
+            func_809F4980(&this->actor);
+        }
+        Matrix_RotateYS(this->actor.yawTowardsPlayer, MTXMODE_NEW);
+        Matrix_MultVecZ(-20.0f, &vec);
+        this->damageSpeedX = vec.x;
+        this->damageSpeedZ = vec.z;
+    }
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A04878.s")
 

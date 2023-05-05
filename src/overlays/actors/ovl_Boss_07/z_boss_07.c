@@ -1296,17 +1296,17 @@ void func_80A04768(Boss07* this, PlayState* play) {
     s16 damage;
 
     if ((this->damage == 0) && (this->cylInfo.base.acFlags & 2)) {
-        this->cylInfo.base.acFlags &= 0xFFFD;
-        this->damage = 0xF;
+        this->cylInfo.base.acFlags &= ~AT_HIT;
+        this->damage = 15;
         acHitInfo = this->cylInfo.info.acHitInfo;
-        if (acHitInfo->toucher.dmgFlags & 0x80) {
+        if (acHitInfo->toucher.dmgFlags & DMG_HOOKSHOT) {
             func_80A055E0(this, play);
             return;
         }
         
         damage = this->actor.colChkInfo.damage;
         this->actor.colChkInfo.health -= damage;
-        this->damageFlash = 0xF;
+        this->damageFlash = 15;
         this->actionFunc = func_80A04E5C;
         if ((s8) this->actor.colChkInfo.health <= 0) {
             this->moveMode = 2;
@@ -1314,8 +1314,8 @@ void func_80A04768(Boss07* this, PlayState* play) {
             Enemy_StartFinishingBlow(play, &this->actor);
             Actor_PlaySfx(&this->actor, NA_SE_EN_FOLLOWERS_DEAD);
         } else {
-            this->moveMode = 0xA;
-            this->timer[0] = 0xF;
+            this->moveMode = 10;
+            this->timer[0] = 15;
             func_809F4980(&this->actor);
         }
         Matrix_RotateYS(this->actor.yawTowardsPlayer, MTXMODE_NEW);
@@ -1333,7 +1333,12 @@ void func_80A04768(Boss07* this, PlayState* play) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A04E5C.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A055E0.s")
+// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A055E0.s")
+void func_80A055E0(Boss07* this, PlayState* play) {
+    this->actionFunc = func_80A05608;
+    this->timer[0] = 50;
+    this->actor.speed = 0.0f;
+}
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A05608.s")
 

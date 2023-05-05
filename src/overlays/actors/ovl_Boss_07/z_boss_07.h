@@ -115,7 +115,7 @@ typedef struct Boss07 {
     /* 0x1874 */ u8 hairMode;
     /* 0x1878 */ Vec3f maskBasePos;
     /* 0x1884 */ s32 texNo;
-    /* 0x1888 */ s8 bgCheckOk;
+    /* 0x1888 */ u8 bgCheckOk;
     /* 0x188C */ f32 beamScale1;
     /* 0x1890 */ f32 beamScale12;
     /* 0x1894 */ f32 beamRange;

@@ -19,6 +19,8 @@ void Boss07_Draw(Actor* thisx, PlayState* play);
 void Boss07_SeedRand(s32 arg0, s32 arg1, s32 arg2);
 f32 Boss07_RandZeroOne(void);
 void func_809F4980(Actor* thisx);
+void func_809F4AE8(PlayState* play, Vec3f* vec0, Vec3f* vec1, Vec3f* vec2, f32 arg4);
+s32 func_809F4C40(Boss07* this, PlayState* play);
 void func_809F4CBC(Boss07* this, f32 maxStep);   
 void func_809F4D10(Vec3f* arg0, f32 arg1);
 void func_809F5E88(Boss07* this, PlayState* play);
@@ -443,6 +445,7 @@ static Vec3f D_80A07F6C[5] = {
 static Vec3f D_80A07FE0 = { 0.0f, 0.0f, 0.0f };
 
 static Vec3f D_80A084D8 = { 3.1415927f, 0.2f, 0.2f };
+// static f32 D_80A086F0 = -0.05f;
 #endif
 
 extern s16 D_80A07950;
@@ -472,6 +475,7 @@ extern UNK_TYPE D_80A07F64;
 extern Vec3f D_80A07F6C[5];
 extern Vec3f D_80A07FE0;
 extern Vec3f D_80A084D8;
+// extern f32 D_80A086F0;
 extern Vec3f D_80A09A40;
 extern s8 D_80A09A4C;
 extern s32 D_80A09A50;
@@ -1331,7 +1335,161 @@ void func_80A04768(Boss07* this, PlayState* play) {
 
 #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A04DE0.s")
 
-#pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A04E5C.s")
+// #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A04E5C.s")
+/** Action function after remains (?) taking damage */
+void func_80A04E5C(Boss07* this, PlayState* play) {
+    s16 sp7E;
+    s16 sp7C;
+    f32 temp_fa0;
+    f32 sp74;
+    f32 temp_fa1;
+    f32 temp_ft1;
+    Vec3f sp60;
+    Vec3f sp54;
+    Vec3f sp48;
+
+    switch (this->moveMode) {
+    case 0:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+    case 16:
+    case 17:
+    case 18:
+    case 19:
+        break;
+    case 20:
+        Actor_PlaySfx(&this->actor, NA_SE_EV_MUJURA_FOLLOWERS_FLY - SFX_FLAG);
+        this->timer[0] = 80;
+        temp_ft1 = Rand_ZeroFloat(100.0f) + 100.0f;
+        this->baseSpeed = 5.0f;
+        this->actor.speed = 5.0f;
+        this->timer[2] = temp_ft1;
+        this->target = gZeroVec3f;
+        this->actor.world.rot.y = Math_Atan2S(-this->actor.world.pos.x, -this->actor.world.pos.z);
+        this->moveMode = 1;
+        this->bgCheckOk = 100;
+        this->cylInfo.base.colType = COLTYPE_HIT3;
+        this->actor.flags |= ACTOR_FLAG_200 | ACTOR_FLAG_1;
+        Actor_PlaySfx(&this->actor, NA_SE_EN_LAST1_DEMO_BREAK);
+        break;
+    case 1:
+        Actor_PlaySfx(&this->actor, NA_SE_EV_MUJURA_FOLLOWERS_FLY - SFX_FLAG);
+        if (this->timer[2] == 0) {
+            this->beamOn = 1;
+            this->timer[2] = Rand_ZeroFloat(200.0f) + 100.0f;
+        }
+        if (this->timer[0] == 0) {
+            if (Rand_ZeroOne() < 0.35f) {
+                this->baseSpeed = 1.0f;
+                this->timer[0] = Rand_ZeroFloat(50.0f) + 30.0f;
+            } else {
+                func_809F4D10(&this->target, 500.0f);
+                this->target.y = Rand_ZeroFloat(350.0f) + 100.0f;
+                this->timer[0] = Rand_ZeroFloat(50.0f) + 20.0f;
+                this->targetSp = 0.0f;
+                this->baseSpeed = Rand_ZeroFloat(5.0f) + 5.0f;
+            }
+        }
+        temp_fa0 = this->target.x - this->actor.world.pos.x;
+        sp74 = this->target.y - this->actor.world.pos.y;
+        temp_fa1 = this->target.z - this->actor.world.pos.z;
+        sp7C = Math_Atan2S(temp_fa0, temp_fa1);
+        sp7E = Math_Atan2S(sp74, sqrtf((temp_fa0 * temp_fa0) + (temp_fa1 * temp_fa1)));
+        sp7E += (s16) (Math_SinS(this->count * 5000) * 4000.0f);
+        Math_ApproachS(&this->actor.world.rot.y, sp7C, 10, this->targetSp);
+        Math_ApproachS(&this->actor.world.rot.x, sp7E, 5, this->targetSp);
+        Math_ApproachF(&this->targetSp, 2000.0f, 1.0f, 100.0f);
+        Math_ApproachF(&this->actor.speed, this->baseSpeed, 1.0f, 1.0f);
+        if ((this->baseSpeed < 8.0f) && (Play_InCsMode(play) == 0)) {
+            Math_ApproachS(&this->actor.shape.rot.y, this->actor.yawTowardsPlayer, 10, 4096);
+        } else {
+            Math_ApproachS(&this->actor.shape.rot.y, this->actor.world.rot.y, 10, 4096);
+        }
+        Actor_UpdateVelocityWithoutGravity(&this->actor);
+        Actor_UpdatePos(&this->actor);
+        if (this->bgCheckOk == 0) {
+            Actor_UpdateBgCheckInfo(play, &this->actor, 50.0f, 100.0f, 100.0f, 5);
+        } else {
+            this->bgCheckOk--;
+        }
+        func_80A04768(this, play);
+        break;
+    case 2:
+        Math_ApproachS(&this->actor.shape.rot.x, -16384, 1, 1280);
+        Actor_MoveWithGravity(&this->actor);
+        Actor_UpdateBgCheckInfo(play, &this->actor, 50.0f, 100.0f, 100.0f, 5);
+        if (this->actor.bgCheckFlags & 1) {
+            if (this->fireMode != 0) {
+                this->fireTime |= 4;
+            }
+            Math_ApproachF(&this->actor.scale.z, 0.0f, 1.0f, 0.001f);
+            if (this->actor.scale.z == 0.0f) {
+                this->moveMode = 3;
+                this->actor.draw = NULL;
+                this->actor.flags &= ~ACTOR_FLAG_1;
+            }
+            func_809F4CBC(this, 2.0f);
+        } else {
+            this->actor.shape.rot.z += 512;
+        }
+        break;
+    case 10:
+        Actor_MoveWithGravity(&this->actor);
+        this->actor.world.pos.y -= 50.0f;
+        this->actor.prevPos.y -= 50.0f;
+        Actor_UpdateBgCheckInfo(play, &this->actor, 35.0f, 60.0f, 60.0f, 5);
+        this->actor.world.pos.y += 50.0f;
+        this->actor.prevPos.y += 50.0f;
+        if (this->timer[0] == 0) {
+            this->moveMode = 1;
+        }
+        break;
+    }
+    if ((s32) this->moveMode < 2) {
+        Collider_UpdateCylinder(&this->actor, &this->cylInfo);
+        CollisionCheck_SetAC(play, &play->colChkCtx, &this->cylInfo.base);
+        CollisionCheck_SetAT(play, &play->colChkCtx, &this->cylInfo.base);
+    }
+    if (this->beamOn != 0) {
+        this->beamOn = 0;
+        if ((func_809F4C40(this, play) != 0) && (D_80A09A5C->actionFunc != func_80A00720)) {
+            Actor_Spawn(&play->actorCtx, play, ACTOR_BOSS_07, this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0, 0x64);
+        }
+    }
+    if (this->fireTime != 0) {
+        sp60.x = randPlusMinusPoint5Scaled(80.0f) + this->actor.world.pos.x;
+        sp60.z = randPlusMinusPoint5Scaled(80.0f) + this->actor.world.pos.z;
+        if (this->fireMode != 0) {
+            sp48.z = 0.0f;
+            sp48.x = 0.0f;
+            sp48.y = 0.03f;
+            sp60.y = Rand_ZeroFloat(10.0f) + this->actor.world.pos.y;
+            EffectSsKFire_Spawn(play, &sp60, &gZeroVec3f, &sp48, Rand_ZeroFloat(30.0f) + 30.0f, 0);
+            Actor_PlaySfx(&this->actor, NA_SE_EN_COMMON_EXTINCT_LEV - SFX_FLAG);
+            return;
+        }
+        sp60.y = Rand_ZeroFloat(30.0f) + this->actor.world.pos.y - 15.0f;
+        sp54.y = 5.0f;
+        sp54.x = 0.0f;
+        sp54.z = 0.0f;
+        sp48.y = 5.0f;
+        sp48.y *= -0.05f;
+        sp48.x = 0.0f;
+        sp48.z = 0.0f;
+        func_809F4AE8(play, &sp60, &sp54, &sp48, Rand_ZeroFloat(10.0f) + 25.0f);
+        Actor_PlaySfx(&this->actor, NA_SE_EV_BURN_OUT - SFX_FLAG);
+    }
+}
 
 // #pragma GLOBAL_ASM("asm/non_matchings/overlays/ovl_Boss_07/func_80A055E0.s")
 /** Remains (?) hookshot reaction */

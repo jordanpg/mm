@@ -446,7 +446,6 @@ static Vec3f D_80A07F6C[5] = {
 static Vec3f D_80A07FE0 = { 0.0f, 0.0f, 0.0f };
 
 static Vec3f D_80A084D8 = { 3.1415927f, 0.2f, 0.2f };
-// static f32 D_80A086F0 = -0.05f;
 #endif
 
 extern s16 D_80A07950;
@@ -476,7 +475,6 @@ extern UNK_TYPE D_80A07F64;
 extern Vec3f D_80A07F6C[5];
 extern Vec3f D_80A07FE0;
 extern Vec3f D_80A084D8;
-// extern f32 D_80A086F0;
 extern Vec3f D_80A09A40;
 extern s8 D_80A09A4C;
 extern s32 D_80A09A50;
